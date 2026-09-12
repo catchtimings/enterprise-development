@@ -3,7 +3,7 @@
 namespace FoodDelivery.Domain;
 
 /// <summary>
-/// Генератор тестового датасета (содержит как минимум 10 экземпляров каждой сущности)
+/// Генератор тестового датасета
 /// </summary>
 public class DataSeeder
 {

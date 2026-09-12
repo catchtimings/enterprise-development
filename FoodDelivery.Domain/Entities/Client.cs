@@ -13,7 +13,6 @@ public class Client
     /// <summary>
     /// ФИО клиента
     /// </summary>
-    /// <example>Иванов Иван Иванович</example>
     public required string FullName { get; set; }
 
     /// <summary>

@@ -21,7 +21,7 @@ public class Restaurant
     public required string Address { get; set; }
 
     /// <summary>
-    /// Рейтинг ресторана от 0.0 до 5.0
+    /// Рейтинг ресторана
     /// </summary>
     public double Rating { get; set; }
 
