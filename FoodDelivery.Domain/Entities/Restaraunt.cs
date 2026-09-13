@@ -26,7 +26,12 @@ public class Restaurant
     public double Rating { get; set; }
 
     /// <summary>
-    /// Часы работы
+    /// Время открытия ресторана
     /// </summary>
-    public string? OpeningHours { get; set; }
+    public TimeOnly OpeningHours { get; set; }
+
+    /// <summary>
+    /// Время закрытия ресторана
+    /// </summary>
+    public TimeOnly ClosingHours { get; set; }
 }
