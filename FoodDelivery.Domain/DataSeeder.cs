@@ -57,8 +57,8 @@ public class DataSeeder
                 Name = $"Ресторан №{i}",
                 Address = $"Ул. Ленина, д. {i}",
                 Rating = 4.0 + (i % 5) * 0.2,
-                OpeningHours = new TimeOnly(09, 00, 00),
-                ClosingHours = new TimeOnly(23, 00, 00)
+                OpeningTime = new TimeOnly(09, 00, 00),
+                ClosingTime = new TimeOnly(23, 00, 00)
             });
         }
 

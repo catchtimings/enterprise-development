@@ -70,8 +70,8 @@ public class AnalyticsTests(DatabaseFixture fixture) : IClassFixture<DatabaseFix
     public void GetCategoryOrderSummary_ForGivenPeriod_ReturnsCorrectAggregations()
     {
         // Arrange
-        var startDate = DateTime.UtcNow.AddDays(-10);
-        var endDate = DateTime.UtcNow;
+        var startDate = DateTimeOffset.UtcNow.AddDays(-10);
+        var endDate = DateTimeOffset.UtcNow;
         const int expectedCategoriesCount = 10;
 
         // Act

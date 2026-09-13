@@ -18,7 +18,7 @@ public class Dish
     /// <summary>
     /// Вес блюда в граммах
     /// </summary>
-    public double WeightInGrams { get; set; }
+    public int WeightInGrams { get; set; }
 
     /// <summary>
     /// Цена блюда в рублях

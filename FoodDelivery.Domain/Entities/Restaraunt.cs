@@ -28,10 +28,10 @@ public class Restaurant
     /// <summary>
     /// Время открытия ресторана
     /// </summary>
-    public TimeOnly OpeningHours { get; set; }
+    public TimeOnly OpeningTime { get; set; }
 
     /// <summary>
     /// Время закрытия ресторана
     /// </summary>
-    public TimeOnly ClosingHours { get; set; }
+    public TimeOnly ClosingTime { get; set; }
 }
