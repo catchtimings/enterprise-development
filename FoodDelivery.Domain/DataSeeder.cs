@@ -55,7 +55,7 @@ public class DataSeeder
             {
                 Id = Guid.NewGuid(),
                 Name = $"Ресторан №{i}",
-                Address = $"Улица Ленина, д. {i}",
+                Address = $"Ул. Ленина, д. {i}",
                 Rating = 4.0 + (i % 5) * 0.2,
                 OpeningHours = new TimeOnly(09, 00, 00),
                 ClosingHours = new TimeOnly(23, 00, 00)
@@ -76,7 +76,7 @@ public class DataSeeder
                 Id = Guid.NewGuid(),
                 FullName = names[i],
                 PhoneNumber = $"+7999000000{i}",
-                DeliveryAddress = $"Квартира {i + 1}"
+                DeliveryAddress = $"Ул. Пушкина, {i + 1}, д. Колотушкина {i + 10}, кв. {i + 100}"
             });
         }
 
@@ -93,7 +93,7 @@ public class DataSeeder
             });
         }
 
-        var baseTime = DateTime.UtcNow.AddDays(-5);
+        var baseTime = DateTimeOffset.UtcNow.AddDays(-5);
         for (var i = 0; i < 10; i++)
         {
             var dish = Dishes[i];

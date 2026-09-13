@@ -33,12 +33,12 @@ public class Order
     /// <summary>
     /// Дата и время оформления заказа
     /// </summary>
-    public DateTime CreatedAt { get; set; }
+    public DateTimeOffset CreatedAt { get; set; }
 
     /// <summary>
     /// Дата и время доставки
     /// </summary>
-    public DateTime DeliveredAt { get; set; }
+    public DateTimeOffset DeliveredAt { get; set; }
 
     /// <summary>
     /// Итоговая сумма заказа
