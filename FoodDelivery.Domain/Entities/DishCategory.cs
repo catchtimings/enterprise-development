@@ -8,7 +8,7 @@ public class DishCategory
     /// <summary>
     /// Идентификатор категории
     /// </summary>
-    public Guid Id { get; init; } = Guid.NewGuid();
+    public required int Id { get; set; }
 
     /// <summary>
     /// Название категории

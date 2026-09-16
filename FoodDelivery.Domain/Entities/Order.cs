@@ -8,12 +8,12 @@ public class Order
     /// <summary>
     /// Идентификатор заказа
     /// </summary>
-    public Guid Id { get; init; } = Guid.NewGuid();
+    public required int Id { get; set; }
 
     /// <summary>
     /// Идентификатор клиента
     /// </summary>
-    public Guid ClientId { get; set; }
+    public required int ClientId { get; set; }
 
     /// <summary>
     /// Клиент, оформивший заказ
@@ -23,7 +23,7 @@ public class Order
     /// <summary>
     /// Идентификатор ресторана
     /// </summary>
-    public Guid RestaurantId { get; set; }
+    public required int RestaurantId { get; set; }
 
     /// <summary>
     /// Ресторан, исполняющий заказ

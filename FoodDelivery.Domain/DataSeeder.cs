@@ -8,28 +8,14 @@ namespace FoodDelivery.Domain;
 public class DataSeeder
 {
     /// <summary>
-    /// Список категорий блюд
+    /// Количество экземпляров каждой сущности
     /// </summary>
+    private const int SeedSize = 10;
+
     public List<DishCategory> Categories { get; } = [];
-
-    /// <summary>
-    /// Список ресторанов
-    /// </summary>
     public List<Restaurant> Restaurants { get; } = [];
-
-    /// <summary>
-    /// Список клиентов
-    /// </summary>
     public List<Client> Clients { get; } = [];
-
-    /// <summary>
-    /// Список блюд
-    /// </summary>
     public List<Dish> Dishes { get; } = [];
-
-    /// <summary>
-    /// Список заказов
-    /// </summary>
     public List<Order> Orders { get; } = [];
 
     public DataSeeder()
@@ -39,29 +25,49 @@ public class DataSeeder
 
     private void SeedData()
     {
-        var categoryNames = new[] { "Пицца", "Суши", "Бургеры", "Супы", "Салаты", "Десерты", "Напитки", "Закуски", "Паста", "Гриль" };
-        for (var i = 0; i < 10; i++)
+        SeedCategories();
+        SeedRestaurants();
+        SeedClients();
+        SeedDishes();
+        SeedOrders();
+    }
+
+    private void SeedCategories()
+    {
+        var names = new[]
+        {
+            "Пицца", "Суши", "Бургеры", "Супы", "Салаты",
+            "Десерты", "Напитки", "Закуски", "Паста", "Гриль"
+        };
+
+        for (var i = 1; i <= SeedSize; i++)
         {
             Categories.Add(new DishCategory
             {
-                Id = Guid.NewGuid(),
-                Name = categoryNames[i]
+                Id = i,
+                Name = names[i - 1]
             });
         }
+    }
 
-        for (var i = 1; i <= 10; i++)
+    private void SeedRestaurants()
+    {
+        for (var i = 1; i <= SeedSize; i++)
         {
             Restaurants.Add(new Restaurant
             {
-                Id = Guid.NewGuid(),
+                Id = i,
                 Name = $"Ресторан №{i}",
                 Address = $"Ул. Ленина, д. {i}",
                 Rating = 4.0 + (i % 5) * 0.2,
-                OpeningTime = new TimeOnly(09, 00, 00),
-                ClosingTime = new TimeOnly(23, 00, 00)
+                OpeningTime = new TimeOnly(9, 0, 0),
+                ClosingTime = new TimeOnly(23, 0, 0)
             });
         }
+    }
 
+    private void SeedClients()
+    {
         var names = new[]
         {
             "Аннова Анна Ивановна", "Алексеев Алексей Алексеевич", "Васильев Василий Васильевич",
@@ -69,59 +75,70 @@ public class DataSeeder
             "Павлов Павел Павлович", "Петров Петр Петрович", "Сергеев Сергей Сергеевич", "Сидоров Сидор Сидорович"
         };
 
-        for (var i = 0; i < 10; i++)
+        for (var i = 1; i <= SeedSize; i++)
         {
             Clients.Add(new Client
             {
-                Id = Guid.NewGuid(),
-                FullName = names[i],
-                PhoneNumber = $"+7999000000{i}",
-                DeliveryAddress = $"Ул. Пушкина, {i + 1}, д. Колотушкина {i + 10}, кв. {i + 100}"
+                Id = i,
+                FullName = names[i - 1],
+                PhoneNumber = $"+7999000000{i - 1}",
+                DeliveryAddress = $"Ул. Пушкина, {i}, д. Колотушкина {i + 10}, кв. {i + 100}"
             });
         }
+    }
 
-        for (var i = 0; i < 10; i++)
+    private void SeedDishes()
+    {
+        for (var i = 1; i <= SeedSize; i++)
         {
+            var category = Categories[i - 1];
             Dishes.Add(new Dish
             {
-                Id = Guid.NewGuid(),
-                Name = $"Блюдо {i + 1}",
-                WeightInGrams = 200 + i * 50,
-                Price = 150 + i * 100,
-                CategoryId = Categories[i].Id,
-                Category = Categories[i]
+                Id = i,
+                Name = $"Блюдо {i}",
+                WeightInGrams = 150 + i * 50,
+                Price = 150 + (i - 1) * 100,
+                CategoryId = category.Id,
+                Category = category
             });
         }
+    }
 
+    private void SeedOrders()
+    {
         var baseTime = DateTimeOffset.UtcNow.AddDays(-5);
-        for (var i = 0; i < 10; i++)
-        {
-            var dish = Dishes[i];
-            var orderItem = new OrderItem
-            {
-                Id = Guid.NewGuid(),
-                DishId = dish.Id,
-                Dish = dish,
-                Quantity = i + 1,
-                PriceAtOrder = dish.Price
-            };
 
-            var deliveryDelayMinutes = (i < 2) ? 15 : 20 + i * 5;
+        for (var i = 1; i <= SeedSize; i++)
+        {
+            var dish = Dishes[i - 1];
+            var client = Clients[i - 1];
+            var restaurant = Restaurants[i - 1];
+
+            var deliveryDelayMinutes = i <= 2 ? 15 : 20 + i * 5;
 
             var order = new Order
             {
-                Id = Guid.NewGuid(),
-                ClientId = Clients[i].Id,
-                Client = Clients[i],
-                RestaurantId = Restaurants[i % Restaurants.Count].Id,
-                Restaurant = Restaurants[i % Restaurants.Count],
+                Id = i,
+                ClientId = client.Id,
+                Client = client,
+                RestaurantId = restaurant.Id,
+                Restaurant = restaurant,
                 CreatedAt = baseTime.AddHours(i * 2),
                 DeliveredAt = baseTime.AddHours(i * 2).AddMinutes(deliveryDelayMinutes),
-                TotalAmount = orderItem.Quantity * orderItem.PriceAtOrder,
-                Items = [orderItem]
+                TotalAmount = i * dish.Price
             };
 
-            orderItem.OrderId = order.Id;
+            var orderItem = new OrderItem
+            {
+                Id = i,
+                OrderId = order.Id,
+                DishId = dish.Id,
+                Dish = dish,
+                Quantity = i,
+                PriceAtOrder = dish.Price
+            };
+
+            order.Items.Add(orderItem);
             Orders.Add(order);
         }
     }

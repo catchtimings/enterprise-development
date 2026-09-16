@@ -8,7 +8,7 @@ public class Dish
     /// <summary>
     /// Идентификатор блюда
     /// </summary>
-    public Guid Id { get; init; } = Guid.NewGuid();
+    public required int Id { get; set; }
 
     /// <summary>
     /// Название блюда
@@ -28,7 +28,7 @@ public class Dish
     /// <summary>
     /// Идентификатор категории блюда
     /// </summary>
-    public Guid CategoryId { get; set; }
+    public required int CategoryId { get; set; }
 
     /// <summary>
     /// Категория блюда

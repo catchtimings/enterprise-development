@@ -8,7 +8,7 @@ public class Client
     /// <summary>
     /// Идентификатор клиента
     /// </summary>
-    public Guid Id { get; init; } = Guid.NewGuid();
+    public required int Id { get; set; }
 
     /// <summary>
     /// ФИО клиента

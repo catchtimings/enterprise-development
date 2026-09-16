@@ -8,17 +8,17 @@ public class OrderItem
     /// <summary>
     /// Идентификатор позиции
     /// </summary>
-    public Guid Id { get; init; } = Guid.NewGuid();
+    public required int Id { get; set; }
 
     /// <summary>
     /// Идентификатор заказа
     /// </summary>
-    public Guid OrderId { get; set; }
+    public required int OrderId { get; set; }
 
     /// <summary>
     /// Идентификатор блюда
     /// </summary>
-    public Guid DishId { get; set; }
+    public required int DishId { get; set; }
 
     /// <summary>
     /// Блюдо
@@ -28,7 +28,7 @@ public class OrderItem
     /// <summary>
     /// Количество порций
     /// </summary>
-    public int Quantity { get; set; }
+    public required int Quantity { get; set; }
 
     /// <summary>
     /// Фиксированная цена блюда на момент оформления заказа
