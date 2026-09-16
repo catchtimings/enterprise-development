@@ -115,7 +115,7 @@ public class DataSeeder
             {
                 Id = i,
                 Name = $"Блюдо {i}",
-                WeightInGrams = 150 + i * 50,
+                Weight = 150 + i * 50,
                 Price = 150 + (i - 1) * 100,
                 CategoryId = category.Id,
                 Category = category
@@ -125,7 +125,7 @@ public class DataSeeder
 
     private void SeedOrders()
     {
-        var baseTime = DateTime.UtcNow.AddDays(-5);
+        DateTime baseTime = new(2026, 9, 10, 12, 0, 0, DateTimeKind.Utc);
 
         for (var i = 1; i <= SeedSize; i++)
         {
