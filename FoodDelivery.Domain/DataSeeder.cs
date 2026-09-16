@@ -59,12 +59,12 @@ public class DataSeeder
             "Десерты", "Напитки", "Закуски", "Паста", "Гриль"
         };
 
-        for (var i = 1; i <= SeedSize; i++)
+        for (var i = 0; i < names.Length; i++)
         {
             Categories.Add(new DishCategory
             {
-                Id = i,
-                Name = names[i - 1]
+                Id = i + 1,
+                Name = names[i]
             });
         }
     }
@@ -125,7 +125,7 @@ public class DataSeeder
 
     private void SeedOrders()
     {
-        var baseTime = DateTimeOffset.UtcNow.AddDays(-5);
+        var baseTime = DateTime.UtcNow.AddDays(-5);
 
         for (var i = 1; i <= SeedSize; i++)
         {
