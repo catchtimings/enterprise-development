@@ -12,10 +12,29 @@ public class DataSeeder
     /// </summary>
     private const int SeedSize = 10;
 
+    /// <summary>
+    /// Список категорий
+    /// </summary>
     public List<DishCategory> Categories { get; } = [];
+
+    /// <summary>
+    /// Список ресторанов
+    /// </summary>
     public List<Restaurant> Restaurants { get; } = [];
+
+    /// <summary>
+    /// Список клиентов
+    /// </summary>
     public List<Client> Clients { get; } = [];
+
+    /// <summary>
+    /// Список блюд
+    /// </summary>
     public List<Dish> Dishes { get; } = [];
+
+    /// <summary>
+    /// Список заказов
+    /// </summary>
     public List<Order> Orders { get; } = [];
 
     public DataSeeder()
