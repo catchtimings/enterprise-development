@@ -14,7 +14,7 @@ public class AnalyticsTests(DatabaseFixture fixture) : IClassFixture<DatabaseFix
     {
         // Arrange
         const int topCount = 5;
-        var expectedRestaurantIds = new[] { 1, 2, 3, 4, 5 };
+        var expectedRestaurantIds = new[] { 10, 1, 2, 3, 4 };
 
         // Act
         var result = _seeder.Orders
@@ -92,9 +92,9 @@ public class AnalyticsTests(DatabaseFixture fixture) : IClassFixture<DatabaseFix
         var expectedPizzaAverageSum = 150m;
         var expectedPizzaTotalSum = 150m;
 
-        var expectedGrillOrderCount = 1;
+        var expectedGrillOrderCount = 2;
         var expectedGrillAverageSum = 10500m;
-        var expectedGrillTotalSum = 10500m;
+        var expectedGrillTotalSum = 21000m;
 
         var startDate = new DateTime(2026, 9, 10, 0, 0, 0);
         var endDate = new DateTime(2026, 9, 12, 23, 59, 59);
@@ -146,11 +146,11 @@ public class AnalyticsTests(DatabaseFixture fixture) : IClassFixture<DatabaseFix
     public void GetTopSpenderClient_WhenOrdersExist_ReturnsClientWithMaxTotalAmount()
     {
         // Arrange
-        const int expectedTopSpenderId = 10;
+        var expectedTopSpenderIds = new[] { 10, 11 };
         const decimal expectedTotalSpent = 10500m;
 
         // Act
-        var result = _seeder.Orders
+        var clientSpending = _seeder.Orders
             .Where(o => o.Client != null)
             .GroupBy(o => o.Client!)
             .Select(g => new
@@ -158,13 +158,18 @@ public class AnalyticsTests(DatabaseFixture fixture) : IClassFixture<DatabaseFix
                 Client = g.Key,
                 TotalSpent = g.Sum(o => o.TotalAmount)
             })
-            .OrderByDescending(x => x.TotalSpent)
-            .ThenBy(x => x.Client.Id)
-            .FirstOrDefault();
+            .ToList();
+
+        var maxTotalSpent = clientSpending.Max(x => x.TotalSpent);
+
+        var result = clientSpending
+            .Where(x => x.TotalSpent == maxTotalSpent)
+            .OrderBy(x => x.Client.Id)
+            .ToArray();
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Equal(expectedTopSpenderId, result.Client.Id);
-        Assert.Equal(expectedTotalSpent, result.TotalSpent);
+        Assert.NotEmpty(result);
+        Assert.Equal(expectedTopSpenderIds, result.Select(x => x.Client.Id).ToArray());
+        Assert.All(result, x => Assert.Equal(expectedTotalSpent, x.TotalSpent));
     }
 }

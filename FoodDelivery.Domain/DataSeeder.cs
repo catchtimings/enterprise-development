@@ -89,7 +89,8 @@ public class DataSeeder
         new Client { Id = 7, FullName = "Павлов Павел Павлович", PhoneNumber = "+79990000006", DeliveryAddress = "Ул. Пушкина, 7, д. Колотушкина 17, кв. 107" },
         new Client { Id = 8, FullName = "Петров Петр Петрович", PhoneNumber = "+79990000007", DeliveryAddress = "Ул. Пушкина, 8, д. Колотушкина 18, кв. 108" },
         new Client { Id = 9, FullName = "Сергеев Сергей Сергеевич", PhoneNumber = "+79990000008", DeliveryAddress = "Ул. Пушкина, 9, д. Колотушкина 19, кв. 109" },
-        new Client { Id = 10, FullName = "Сидоров Сидор Сидорович", PhoneNumber = "+79990000009", DeliveryAddress = "Ул. Пушкина, 10, д. Колотушкина 20, кв. 110" }
+        new Client { Id = 10, FullName = "Сидоров Сидор Сидорович", PhoneNumber = "+79990000009", DeliveryAddress = "Ул. Пушкина, 10, д. Колотушкина 20, кв. 110" },
+        new Client { Id = 11, FullName = "Смирнов Станислав Сергеевич", PhoneNumber = "+79990000010", DeliveryAddress = "Ул. Пушкина, 11, д. Колотушкина 21, кв. 111" }
     ];
 
     /// <summary>
@@ -129,6 +130,7 @@ public class DataSeeder
         new Order { Id = 7, ClientId = 7, Client = clients[6], RestaurantId = 7, Restaurant = restaurants[6], CreatedAt = new DateTime(2026, 9, 11, 18, 0, 0), DeliveredAt = new DateTime(2026, 9, 11, 18, 55, 0), TotalAmount = 5250, Items = [new OrderItem { Id = 7, OrderId = 7, DishId = 7, Dish = dishes[6], Quantity = 7, PriceAtOrder = 750 }] },
         new Order { Id = 8, ClientId = 8, Client = clients[7], RestaurantId = 8, Restaurant = restaurants[7], CreatedAt = new DateTime(2026, 9, 11, 20, 0, 0), DeliveredAt = new DateTime(2026, 9, 11, 21, 0, 0), TotalAmount = 6800, Items = [new OrderItem { Id = 8, OrderId = 8, DishId = 8, Dish = dishes[7], Quantity = 8, PriceAtOrder = 850 }] },
         new Order { Id = 9, ClientId = 9, Client = clients[8], RestaurantId = 9, Restaurant = restaurants[8], CreatedAt = new DateTime(2026, 9, 12, 14, 0, 0), DeliveredAt = new DateTime(2026, 9, 12, 15, 5, 0), TotalAmount = 8550, Items = [new OrderItem { Id = 9, OrderId = 9, DishId = 9, Dish = dishes[8], Quantity = 9, PriceAtOrder = 950 }] },
-        new Order { Id = 10, ClientId = 10, Client = clients[9], RestaurantId = 10, Restaurant = restaurants[9], CreatedAt = new DateTime(2026, 9, 12, 16, 0, 0), DeliveredAt = new DateTime(2026, 9, 12, 17, 10, 0), TotalAmount = 10500, Items = [new OrderItem { Id = 10, OrderId = 10, DishId = 10, Dish = dishes[9], Quantity = 10, PriceAtOrder = 1050 }] }
+        new Order { Id = 10, ClientId = 10, Client = clients[9], RestaurantId = 10, Restaurant = restaurants[9], CreatedAt = new DateTime(2026, 9, 12, 16, 0, 0), DeliveredAt = new DateTime(2026, 9, 12, 17, 10, 0), TotalAmount = 10500, Items = [new OrderItem { Id = 10, OrderId = 10, DishId = 10, Dish = dishes[9], Quantity = 10, PriceAtOrder = 1050 }] },
+        new Order { Id = 11, ClientId = 11, Client = clients[10], RestaurantId = 10, Restaurant = restaurants[9], CreatedAt = new DateTime(2026, 9, 12, 18, 0, 0), DeliveredAt = new DateTime(2026, 9, 12, 19, 10, 0), TotalAmount = 10500, Items = [ new OrderItem { Id = 11, OrderId = 11, DishId = 10, Dish = dishes[9], Quantity = 10, PriceAtOrder = 1050 } ] }
     ];
 }
