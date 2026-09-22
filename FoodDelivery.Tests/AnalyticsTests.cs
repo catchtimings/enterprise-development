@@ -60,9 +60,9 @@ public class AnalyticsTests(DatabaseFixture fixture) : IClassFixture<DatabaseFix
     public void GetClientsByRestaurant_WhenRestaurantSelected_ReturnsClientsOrderedByFullName()
     {
         // Arrange
-        const int selectedRestaurantId = 1;
-        var expectedClientIds = new[] { 1 };
-        var expectedFullNames = new[] { "Аннова Анна Ивановна" };
+        const int selectedRestaurantId = 10;
+        var expectedClientIds = new[] { 10, 11 };
+        var expectedFullNames = new[] { "Сидоров Сидор Сидорович", "Смирнов Станислав Сергеевич" };
 
         // Act
         var result = _seeder.Orders
