@@ -143,7 +143,7 @@ public class AnalyticsTests(DatabaseFixture fixture) : IClassFixture<DatabaseFix
     /// Проверяет получение всех клиентов с максимальной общей суммой заказов
     /// </summary>
     [Fact]
-    public void GetTopSpenderClient_WhenOrdersExist_ReturnsClientWithMaxTotalAmount()
+    public void GetTopSpenderClients_WhenOrdersExist_ReturnsClientsWithMaxTotalAmount()
     {
         // Arrange
         var expectedTopSpenderIds = new[] { 10, 11 };
