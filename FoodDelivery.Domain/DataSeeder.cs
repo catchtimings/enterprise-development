@@ -41,6 +41,7 @@ public class DataSeeder
     /// <summary>
     /// Создаёт список категорий блюд
     /// </summary>
+    /// <returns>Список категорий блюд</returns>
     private static List<DishCategory> GetCategories() =>
     [
         new DishCategory { Id = 1, Name = "Пицца" },
@@ -58,6 +59,7 @@ public class DataSeeder
     /// <summary>
     /// Создаёт список ресторанов
     /// </summary>
+    /// <returns>Список ресторанов</returns>
     private static List<Restaurant> GetRestaurants() =>
     [
         new Restaurant { Id = 1, Name = "Ресторан №1", Address = "Ул. Ленина, д. 1", Rating = 4.2, OpeningTime = new TimeOnly(9, 0), ClosingTime = new TimeOnly(23, 0) },
@@ -75,6 +77,7 @@ public class DataSeeder
     /// <summary>
     /// Создаёт список клиентов
     /// </summary>
+    /// <returns>Список клиентов</returns>
     private static List<Client> GetClients() =>
     [
         new Client { Id = 1, FullName = "Аннова Анна Ивановна", PhoneNumber = "+79990000000", DeliveryAddress = "Ул. Пушкина, 1, д. Колотушкина 11, кв. 101" },
@@ -92,6 +95,8 @@ public class DataSeeder
     /// <summary>
     /// Создаёт список блюд
     /// </summary>
+    /// <param name="categories">Список категорий блюд</param>
+    /// <returns>Список блюд</returns>
     private static List<Dish> GetDishes(List<DishCategory> categories) =>
     [
         new Dish { Id = 1, Name = "Пепперони", Weight = 200, Price = 150, CategoryId = 1, Category = categories[0] },
@@ -109,6 +114,10 @@ public class DataSeeder
     /// <summary>
     /// Создаёт список заказов
     /// </summary>
+    /// <param name="dishes">Список блюд</param>
+    /// <param name="clients">Список клиентов</param>
+    /// <param name="restaurants">Список ресторанов</param>
+    /// <returns>Список заказов</returns>
     private static List<Order> GetOrders(List<Dish> dishes, List<Client> clients, List<Restaurant> restaurants) =>
     [
         new Order { Id = 1, ClientId = 1, Client = clients[0], RestaurantId = 1, Restaurant = restaurants[0], CreatedAt = new DateTime(2026, 9, 10, 14, 0, 0), DeliveredAt = new DateTime(2026, 9, 10, 14, 15, 0), TotalAmount = 150, Items = [new OrderItem { Id = 1, OrderId = 1, DishId = 1, Dish = dishes[0], Quantity = 1, PriceAtOrder = 150 }] },

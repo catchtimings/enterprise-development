@@ -6,6 +6,9 @@ public class AnalyticsTests(DatabaseFixture fixture) : IClassFixture<DatabaseFix
 {
     private readonly DataSeeder _seeder = fixture.Seeder;
 
+    /// <summary>
+    /// Проверяет получение пяти ресторанов с наибольшим количеством заказов
+    /// </summary>
     [Fact]
     public void GetTop5RestaurantsByOrderCount_WhenOrdersExist_ReturnsTop5Restaurants()
     {
@@ -26,6 +29,9 @@ public class AnalyticsTests(DatabaseFixture fixture) : IClassFixture<DatabaseFix
         Assert.Equal(expectedRestaurantIds, result);
     }
 
+    /// <summary>
+    /// Проверяет получение заказов с минимальным временем доставки
+    /// </summary>
     [Fact]
     public void GetOrdersWithMinDeliveryTime_WhenOrdersExist_ReturnsFastestOrders()
     {
@@ -47,6 +53,9 @@ public class AnalyticsTests(DatabaseFixture fixture) : IClassFixture<DatabaseFix
         Assert.Equal(expectedOrderIds, result);
     }
 
+    /// <summary>
+    /// Проверяет получение клиентов выбранного ресторана, отсортированных по ФИО
+    /// </summary>
     [Fact]
     public void GetClientsByRestaurant_WhenRestaurantSelected_ReturnsClientsOrderedByFullName()
     {
@@ -70,6 +79,9 @@ public class AnalyticsTests(DatabaseFixture fixture) : IClassFixture<DatabaseFix
         Assert.Equal(expectedFullNames, result.Select(c => c.FullName).ToArray());
     }
 
+    /// <summary>
+    /// Проверяет получение агрегированной статистики по категориям за заданный период
+    /// </summary>
     [Fact]
     public void GetCategoryOrderSummary_ForGivenPeriod_ReturnsCorrectAggregations()
     {
@@ -127,6 +139,9 @@ public class AnalyticsTests(DatabaseFixture fixture) : IClassFixture<DatabaseFix
         Assert.Equal(expectedGrillTotalSum, grillSummary.TotalSum);
     }
 
+    /// <summary>
+    /// Проверяет получение всех клиентов с максимальной общей суммой заказов
+    /// </summary>
     [Fact]
     public void GetTopSpenderClient_WhenOrdersExist_ReturnsClientWithMaxTotalAmount()
     {
