@@ -2,7 +2,12 @@ name: .NET CI Pipeline
 
 on:
   push:
-    branches: [ "lab_1" ]
+    branches:
+      - lab_1
+
+  pull_request:
+    branches:
+      - lab_1
 
 jobs:
   build-and-test:
