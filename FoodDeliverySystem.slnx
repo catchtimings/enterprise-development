@@ -1,4 +1,7 @@
 <Solution>
+  <Project Path="FoodDelivery.Api/FoodDelivery.Api.csproj" Id="4887e062-851b-4c18-af89-8125e12b7651" />
+  <Project Path="FoodDelivery.Application/FoodDelivery.Application.csproj" Id="b919ec3e-48d7-4586-948a-c82a3826a693" />
+  <Project Path="FoodDelivery.Contracts/FoodDelivery.Contracts.csproj" Id="a93ee061-0f60-4403-ae07-15f29c601877" />
   <Project Path="FoodDelivery.Domain/FoodDelivery.Domain.csproj" />
   <Project Path="FoodDelivery.Tests/FoodDelivery.Tests.csproj" />
 </Solution>
