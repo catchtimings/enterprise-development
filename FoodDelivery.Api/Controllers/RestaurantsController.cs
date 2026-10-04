@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FoodDelivery.Api.Controllers;
 
 /// <summary>
-/// Контроллер для управления ресторанами (CRUD)
+/// Контроллер для управления ресторанами
 /// </summary>
 /// <param name="seeder">Хранилище тестовых данных</param>
 /// <param name="mapper">Маппер объектов</param>
@@ -63,6 +63,30 @@ public class RestaurantsController(DataSeeder seeder, IMapper mapper, ILogger<Re
         logger.LogInformation("Успешно создан ресторан с Id {Id}", newId);
 
         return CreatedAtAction(nameof(GetById), new { id = newId }, mapper.Map<RestaurantDto>(entity));
+    }
+
+    /// <summary>
+    /// Обновляет существующий ресторан
+    /// </summary>
+    /// <param name="id">Идентификатор обновляемого ресторана</param>
+    /// <param name="dto">Модель данных для обновления</param>
+    /// <returns>Статус 204 No Content или 404 Not Found</returns>
+    [HttpPut("{id:int}")]
+    public ActionResult Update(int id, [FromBody] RestaurantCreateDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var item = seeder.Restaurants.FirstOrDefault(r => r.Id == id);
+        if (item == null)
+        {
+            logger.LogWarning("Попытка обновления несуществующего ресторана с Id {Id}", id);
+            return NotFound();
+        }
+
+        mapper.Map(dto, item);
+        logger.LogInformation("Успешно обновлен ресторан с Id {Id}", id);
+        return NoContent();
     }
 
     /// <summary>

@@ -24,9 +24,15 @@ public class AppMapper : Profile
 
         CreateMap<Dish, DishDto>()
             .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category != null ? src.Category.Name : null));
+        CreateMap<DishCreateDto, Dish>();
+
+        CreateMap<OrderItem, OrderItemDto>()
+            .ForMember(dest => dest.DishName, opt => opt.MapFrom(src => src.Dish != null ? src.Dish.Name : null));
+        CreateMap<OrderItemCreateDto, OrderItem>();
 
         CreateMap<Order, OrderDto>()
             .ForMember(dest => dest.ClientName, opt => opt.MapFrom(src => src.Client != null ? src.Client.FullName : null))
             .ForMember(dest => dest.RestaurantName, opt => opt.MapFrom(src => src.Restaurant != null ? src.Restaurant.Name : null));
+        CreateMap<OrderCreateDto, Order>();
     }
 }

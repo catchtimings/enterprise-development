@@ -49,4 +49,9 @@ public class OrderDto
     /// Время, затраченное на доставку
     /// </summary>
     public TimeSpan DeliveryDuration { get; set; }
+
+    /// <summary>
+    /// Список позиций заказа
+    /// </summary>
+    public List<OrderItemDto> Items { get; set; } = [];
 }
