@@ -66,7 +66,7 @@ public class AnalyticsService(DataSeeder seeder, IMapper mapper)
     }
 
     /// <summary>
-    /// Выводит сводную статистику по заказам в разрезе категорий блюд за заданный период
+    /// Выводит сводную статистику по категориям блюд за заданный период
     /// </summary>
     /// <param name="startDate">Начальная дата и время периода</param>
     /// <param name="endDate">Конечная дата и время периода</param>
@@ -92,7 +92,7 @@ public class AnalyticsService(DataSeeder seeder, IMapper mapper)
     }
 
     /// <summary>
-    /// Выводит информацию о клиенте (или клиентах), потратившем наибольшую общую сумму за всё время
+    /// Выводит информацию о всех клиентах с максимальной суммой заказа
     /// </summary>
     /// <returns>Список DTO точечных клиентов с их суммарными тратами</returns>
     public Task<List<TopSpenderDto>> GetTopSpenderClientsAsync()
