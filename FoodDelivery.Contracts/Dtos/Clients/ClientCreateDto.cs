@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FoodDelivery.Contracts.Dtos;
+namespace FoodDelivery.Contracts.Dtos.Clients;
 
 /// <summary>
 /// DTO для создания или обновления клиента

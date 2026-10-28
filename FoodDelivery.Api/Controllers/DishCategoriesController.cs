@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using FoodDelivery.Contracts.Dtos;
+﻿using FoodDelivery.Contracts.Dtos.DishCategories;
 using FoodDelivery.Domain;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,28 +8,24 @@ namespace FoodDelivery.Api.Controllers;
 /// Контроллер справочника категорий блюд
 /// </summary>
 /// <param name="seeder">Хранилище тестовых данных</param>
-/// <param name="mapper">Маппер объектов</param>
 /// <param name="logger">Логгер событий</param>
 [ApiController]
 [Route("api/dish-categories")]
-public class DishCategoriesController(DataSeeder seeder, IMapper mapper, ILogger<DishCategoriesController> logger) : ControllerBase
+public class DishCategoriesController(DataSeeder seeder, ILogger<DishCategoriesController> logger) : ControllerBase
 {
     /// <summary>
     /// Возвращает список всех категорий блюд
     /// </summary>
-    /// <returns>Коллекция DTO категорий</returns>
     [HttpGet]
     public ActionResult<IEnumerable<DishCategoryDto>> GetAll()
     {
         logger.LogInformation("Получение списка категорий блюд");
-        return Ok(mapper.Map<IEnumerable<DishCategoryDto>>(seeder.Categories));
+        return Ok(seeder.Categories.Select(MapToDto).ToList());
     }
 
     /// <summary>
     /// Возвращает категорию по идентификатору
     /// </summary>
-    /// <param name="id">Идентификатор категории</param>
-    /// <returns>DTO категории или 404 Not Found</returns>
     [HttpGet("{id:int}")]
     public ActionResult<DishCategoryDto> GetById(int id)
     {
@@ -40,6 +35,12 @@ public class DishCategoriesController(DataSeeder seeder, IMapper mapper, ILogger
             logger.LogWarning("Категория с Id {Id} не найдена", id);
             return NotFound();
         }
-        return Ok(mapper.Map<DishCategoryDto>(category));
+        return Ok(MapToDto(category));
     }
+
+    private static DishCategoryDto MapToDto(Domain.Entities.DishCategory category) => new()
+    {
+        Id = category.Id,
+        Name = category.Name
+    };
 }

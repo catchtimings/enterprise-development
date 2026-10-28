@@ -1,4 +1,6 @@
-﻿namespace FoodDelivery.Contracts.Dtos;
+﻿using FoodDelivery.Contracts.Dtos.Clients;
+
+namespace FoodDelivery.Contracts.Dtos.Analytics;
 
 /// <summary>
 /// DTO клиента с максимальной суммой трат

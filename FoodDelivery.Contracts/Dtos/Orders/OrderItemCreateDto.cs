@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FoodDelivery.Contracts.Dtos;
+namespace FoodDelivery.Contracts.Dtos.Orders;
 
 /// <summary>
 /// DTO для создания позиции заказа
@@ -19,9 +19,4 @@ public class OrderItemCreateDto
     [Range(1, 1000, ErrorMessage = "Количество должно быть положительным")]
     public required int Quantity { get; set; }
 
-    /// <summary>
-    /// Фиксированная цена блюда на момент оформления заказа
-    /// </summary>
-    [Range(0, 1000000, ErrorMessage = "Цена должна быть неотрицательной")]
-    public decimal PriceAtOrder { get; set; }
 }

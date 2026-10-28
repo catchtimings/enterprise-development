@@ -1,4 +1,4 @@
-﻿namespace FoodDelivery.Contracts.Dtos;
+﻿namespace FoodDelivery.Contracts.Dtos.Analytics;
 
 /// <summary>
 /// DTO сводной информации по категориям блюд

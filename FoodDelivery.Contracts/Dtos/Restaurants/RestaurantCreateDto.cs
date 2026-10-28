@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FoodDelivery.Contracts.Dtos;
+namespace FoodDelivery.Contracts.Dtos.Restaurants;
 
 /// <summary>
 /// DTO для создания или обновления ресторана

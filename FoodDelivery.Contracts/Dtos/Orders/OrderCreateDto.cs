@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FoodDelivery.Contracts.Dtos;
+namespace FoodDelivery.Contracts.Dtos.Orders;
 
 /// <summary>
 /// DTO для создания или обновления заказа
@@ -20,22 +20,10 @@ public class OrderCreateDto
     public required int RestaurantId { get; set; }
 
     /// <summary>
-    /// Дата и время оформления заказа
-    /// </summary>
-    [Required(ErrorMessage = "Дата оформления обязательна")]
-    public required DateTime CreatedAt { get; set; }
-
-    /// <summary>
     /// Дата и время доставки
     /// </summary>
     [Required(ErrorMessage = "Дата доставки обязательна")]
     public required DateTime DeliveredAt { get; set; }
-
-    /// <summary>
-    /// Итоговая сумма заказа
-    /// </summary>
-    [Range(0, 100000000, ErrorMessage = "Сумма заказа должна быть неотрицательной")]
-    public decimal TotalAmount { get; set; }
 
     /// <summary>
     /// Список позиций заказа

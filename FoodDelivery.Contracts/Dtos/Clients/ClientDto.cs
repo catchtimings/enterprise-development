@@ -1,4 +1,4 @@
-﻿namespace FoodDelivery.Contracts.Dtos;
+﻿namespace FoodDelivery.Contracts.Dtos.Clients;
 
 /// <summary>
 /// DTO клиента службы доставки

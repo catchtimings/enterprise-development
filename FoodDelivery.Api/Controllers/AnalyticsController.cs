@@ -1,5 +1,6 @@
 ﻿using FoodDelivery.Application.Services;
-using FoodDelivery.Contracts.Dtos;
+using FoodDelivery.Contracts.Dtos.Analytics;
+using FoodDelivery.Contracts.Dtos.Clients;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodDelivery.Api.Controllers;
@@ -16,9 +17,8 @@ public class AnalyticsController(AnalyticsService analyticsService, ILogger<Anal
     /// <summary>
     /// Возвращает топ-5 ресторанов по наибольшему количеству заказов
     /// </summary>
-    /// <returns>Список из 5 лучших ресторанов</returns>
     [HttpGet("top-restaurants")]
-    public async Task<ActionResult<List<RestaurantDto>>> GetTopRestaurants()
+    public async Task<ActionResult<List<RestaurantWithOrderCountDto>>> GetTopRestaurants()
     {
         logger.LogInformation("Запрос топ-5 ресторанов по заказам");
         var result = await analyticsService.GetTop5RestaurantsByOrderCountAsync();
@@ -26,11 +26,10 @@ public class AnalyticsController(AnalyticsService analyticsService, ILogger<Anal
     }
 
     /// <summary>
-    /// Возвращает список заказов с минимальным временем доставки
+    /// Возвращает заказы с минимальным временем доставки и само это время
     /// </summary>
-    /// <returns>Заказы с наименьшим значением DeliveryDuration</returns>
     [HttpGet("min-delivery-time-orders")]
-    public async Task<ActionResult<List<OrderDto>>> GetMinDeliveryTimeOrders()
+    public async Task<ActionResult<MinDeliveryTimeOrdersDto>> GetMinDeliveryTimeOrders()
     {
         logger.LogInformation("Запрос заказов с минимальным временем доставки");
         var result = await analyticsService.GetOrdersWithMinDeliveryTimeAsync();
@@ -38,10 +37,8 @@ public class AnalyticsController(AnalyticsService analyticsService, ILogger<Anal
     }
 
     /// <summary>
-    /// Возвращает сведения о клиентах указанного ресторана, отсортированные по ФИО
+    /// Возвращает клиентов указанного ресторана, отсортированных по ФИО
     /// </summary>
-    /// <param name="restaurantId">Идентификатор ресторана</param>
-    /// <returns>Список клиентов, оформлявших заказы в данном ресторане</returns>
     [HttpGet("restaurant/{restaurantId:int}/clients")]
     public async Task<ActionResult<List<ClientDto>>> GetClientsByRestaurant(int restaurantId)
     {
@@ -53,9 +50,6 @@ public class AnalyticsController(AnalyticsService analyticsService, ILogger<Anal
     /// <summary>
     /// Возвращает сводную статистику по категориям блюд за указанный период
     /// </summary>
-    /// <param name="startDate">Начальная дата и время периода</param>
-    /// <param name="endDate">Конечная дата и время периода</param>
-    /// <returns>Агрегированные данные (количество, средняя и общая сумма) по категориям</returns>
     [HttpGet("category-summary")]
     public async Task<ActionResult<List<CategorySummaryDto>>> GetCategorySummary([FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
     {
@@ -65,9 +59,8 @@ public class AnalyticsController(AnalyticsService analyticsService, ILogger<Anal
     }
 
     /// <summary>
-    /// Возвращает информацию о клиентах с наибольшей суммой трат за всё время
+    /// Возвращает клиентов с наибольшей суммой трат за всё время
     /// </summary>
-    /// <returns>Список точечных клиентов с максимальными тратами</returns>
     [HttpGet("top-spenders")]
     public async Task<ActionResult<List<TopSpenderDto>>> GetTopSpenders()
     {

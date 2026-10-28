@@ -1,18 +1,13 @@
 using FoodDelivery.Application.Services;
-using FoodDelivery.Contracts.Mapper;
 using FoodDelivery.Domain;
 
+Console.OutputEncoding = System.Text.Encoding.UTF8;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
 builder.Services.AddSingleton<DataSeeder>();
-
-builder.Services.AddAutoMapper(cfg =>
-{
-    cfg.AddProfile<AppMapper>();
-});
 
 builder.Services.AddScoped<AnalyticsService>();
 
