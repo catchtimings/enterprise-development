@@ -1,5 +1,5 @@
-﻿using FoodDelivery.Contracts.Dtos.DishCategories;
-using FoodDelivery.Domain;
+﻿using FoodDelivery.Application.Services;
+using FoodDelivery.Contracts.Dtos.DishCategories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodDelivery.Api.Controllers;
@@ -7,40 +7,27 @@ namespace FoodDelivery.Api.Controllers;
 /// <summary>
 /// Контроллер справочника категорий блюд
 /// </summary>
-/// <param name="seeder">Хранилище тестовых данных</param>
-/// <param name="logger">Логгер событий</param>
+/// <param name="categoryService">Сервис категорий</param>
 [ApiController]
 [Route("api/dish-categories")]
-public class DishCategoriesController(DataSeeder seeder, ILogger<DishCategoriesController> logger) : ControllerBase
+public class DishCategoriesController(DishCategoryService categoryService) : ControllerBase
 {
     /// <summary>
-    /// Возвращает список всех категорий блюд
+    /// Возвращает список всех категорий
     /// </summary>
     [HttpGet]
-    public ActionResult<IEnumerable<DishCategoryDto>> GetAll()
+    public async Task<ActionResult<IEnumerable<DishCategoryDto>>> GetAll()
     {
-        logger.LogInformation("Получение списка категорий блюд");
-        return Ok(seeder.Categories.Select(MapToDto).ToList());
+        return Ok(await categoryService.GetAll());
     }
 
     /// <summary>
     /// Возвращает категорию по идентификатору
     /// </summary>
     [HttpGet("{id:int}")]
-    public ActionResult<DishCategoryDto> GetById(int id)
+    public async Task<ActionResult<DishCategoryDto>> GetById(int id)
     {
-        var category = seeder.Categories.FirstOrDefault(c => c.Id == id);
-        if (category == null)
-        {
-            logger.LogWarning("Категория с Id {Id} не найдена", id);
-            return NotFound();
-        }
-        return Ok(MapToDto(category));
+        var result = await categoryService.Get(id);
+        return result is null ? NotFound() : Ok(result);
     }
-
-    private static DishCategoryDto MapToDto(Domain.Entities.DishCategory category) => new()
-    {
-        Id = category.Id,
-        Name = category.Name
-    };
 }

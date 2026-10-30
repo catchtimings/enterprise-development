@@ -1,149 +1,79 @@
-﻿using FoodDelivery.Contracts.Dtos.Clients;
+﻿using FoodDelivery.Application.Services;
+using FoodDelivery.Contracts.Dtos.Clients;
 using FoodDelivery.Contracts.Dtos.Orders;
-using FoodDelivery.Domain;
-using FoodDelivery.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodDelivery.Api.Controllers;
 
 /// <summary>
-/// Контроллер для управления клиентами
+/// Контроллер клиентов
 /// </summary>
-/// <param name="seeder">Хранилище тестовых данных</param>
-/// <param name="logger">Логгер событий</param>
+/// <param name="clientService">Сервис клиентов</param>
+/// <param name="orderService">Сервис заказов</param>
 [ApiController]
 [Route("api/clients")]
-public class ClientsController(DataSeeder seeder, ILogger<ClientsController> logger) : ControllerBase
+public class ClientsController(ClientService clientService, OrderService orderService) : ControllerBase
 {
     /// <summary>
     /// Возвращает список всех клиентов
     /// </summary>
     [HttpGet]
-    public ActionResult<IEnumerable<ClientDto>> GetAll()
+    public async Task<ActionResult<IEnumerable<ClientDto>>> GetAll()
     {
-        logger.LogInformation("Получение полного списка клиентов");
-        return Ok(seeder.Clients.Select(MapToDto).ToList());
+        return Ok(await clientService.GetAll());
     }
 
     /// <summary>
-    /// Возвращает клиента по его уникальному идентификатору
+    /// Возвращает клиента по идентификатору
     /// </summary>
     [HttpGet("{id:int}")]
-    public ActionResult<ClientDto> GetById(int id)
+    public async Task<ActionResult<ClientDto>> GetById(int id)
     {
-        var client = seeder.Clients.FirstOrDefault(c => c.Id == id);
-        if (client == null)
-        {
-            logger.LogWarning("Клиент с Id {Id} не найден", id);
-            return NotFound();
-        }
-        return Ok(MapToDto(client));
+        var result = await clientService.Get(id);
+        return result is null ? NotFound() : Ok(result);
     }
 
     /// <summary>
     /// Создает нового клиента
     /// </summary>
     [HttpPost]
-    public ActionResult<ClientDto> Create([FromBody] ClientCreateDto dto)
+    public async Task<ActionResult<ClientDto>> Create([FromBody] ClientCreateDto dto)
     {
-        var newId = seeder.Clients.Any() ? seeder.Clients.Max(c => c.Id) + 1 : 1;
-        var entity = new Client
-        {
-            Id = newId,
-            FullName = dto.FullName,
-            PhoneNumber = dto.PhoneNumber,
-            DeliveryAddress = dto.DeliveryAddress
-        };
-
-        seeder.Clients.Add(entity);
-        logger.LogInformation("Успешно создан клиент с Id {Id}", newId);
-
-        return CreatedAtAction(nameof(GetById), new { id = newId }, MapToDto(entity));
+        var result = await clientService.Create(dto);
+        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
     }
 
     /// <summary>
-    /// Обновляет существующего клиента
+    /// Обновляет данные клиента
     /// </summary>
     [HttpPut("{id:int}")]
-    public ActionResult Update(int id, [FromBody] ClientCreateDto dto)
+    public async Task<ActionResult> Update(int id, [FromBody] ClientCreateDto dto)
     {
-        var item = seeder.Clients.FirstOrDefault(c => c.Id == id);
-        if (item == null)
-        {
-            logger.LogWarning("Попытка обновления несуществующего клиента с Id {Id}", id);
-            return NotFound();
-        }
-
-        item.FullName = dto.FullName;
-        item.PhoneNumber = dto.PhoneNumber;
-        item.DeliveryAddress = dto.DeliveryAddress;
-
-        logger.LogInformation("Успешно обновлен клиент с Id {Id}", id);
+        await clientService.Update(id, dto);
         return NoContent();
     }
 
     /// <summary>
-    /// Удаляет клиента по идентификатору
+    /// Удаляет клиента
     /// </summary>
     [HttpDelete("{id:int}")]
-    public ActionResult Delete(int id)
+    public async Task<ActionResult> Delete(int id)
     {
-        var item = seeder.Clients.FirstOrDefault(c => c.Id == id);
-        if (item != null) seeder.Clients.Remove(item);
-        logger.LogInformation("Успешно удален клиент с Id {Id}", id);
+        await clientService.Delete(id);
         return NoContent();
     }
 
     /// <summary>
-    /// Возвращает список заказов указанного клиента
+    /// Возвращает заказы указанного клиента
     /// </summary>
     [HttpGet("{id:int}/orders")]
-    public ActionResult<IEnumerable<OrderDto>> GetOrders(int id)
+    public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrders(int id)
     {
-        var client = seeder.Clients.FirstOrDefault(c => c.Id == id);
-        if (client == null)
-        {
-            logger.LogWarning("Клиент с Id {Id} не найден", id);
-            return NotFound();
-        }
+        var client = await clientService.Get(id);
+        if (client is null) return NotFound();
 
-        var orders = seeder.Orders
-            .Where(o => o.ClientId == id)
-            .Select(MapOrderToDto)
-            .ToList();
-
-        return Ok(orders);
+        var allOrders = await orderService.GetAll();
+        var clientOrders = allOrders.Where(o => o.ClientId == id);
+        return Ok(clientOrders);
     }
-
-    private static ClientDto MapToDto(Client client) => new()
-    {
-        Id = client.Id,
-        FullName = client.FullName,
-        PhoneNumber = client.PhoneNumber,
-        DeliveryAddress = client.DeliveryAddress
-    };
-
-    private static OrderDto MapOrderToDto(Order order) => new()
-    {
-        Id = order.Id,
-        ClientId = order.ClientId,
-        ClientName = order.Client?.FullName,
-        RestaurantId = order.RestaurantId,
-        RestaurantName = order.Restaurant?.Name,
-        CreatedAt = order.CreatedAt,
-        DeliveredAt = order.DeliveredAt,
-        TotalAmount = order.TotalAmount,
-        DeliveryDuration = order.DeliveryDuration,
-        Items = order.Items.Select(MapOrderItemToDto).ToList()
-    };
-
-    private static OrderItemDto MapOrderItemToDto(OrderItem item) => new()
-    {
-        Id = item.Id,
-        OrderId = item.OrderId,
-        DishId = item.DishId,
-        DishName = item.Dish?.Name,
-        Quantity = item.Quantity,
-        PriceAtOrder = item.PriceAtOrder
-    };
 }

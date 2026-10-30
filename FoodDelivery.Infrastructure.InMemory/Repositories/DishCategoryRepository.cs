@@ -1,0 +1,44 @@
+﻿using FoodDelivery.Application.Interfaces;
+using FoodDelivery.Domain;
+using FoodDelivery.Domain.Entities;
+
+namespace FoodDelivery.Infrastructure.InMemory.Repositories;
+
+/// <summary>
+/// Репозиторий категорий блюд в памяти
+/// </summary>
+public class DishCategoryRepository(DataSeeder seeder) : IRepository<DishCategory>
+{
+    /// <inheritdoc />
+    public Task<IEnumerable<DishCategory>> GetAll() => Task.FromResult<IEnumerable<DishCategory>>(seeder.Categories);
+
+    /// <inheritdoc />
+    public Task<DishCategory?> GetById(int id) => Task.FromResult(seeder.Categories.FirstOrDefault(c => c.Id == id));
+
+    /// <inheritdoc />
+    public Task Add(DishCategory entity)
+    {
+        entity.Id = seeder.Categories.Any() ? seeder.Categories.Max(c => c.Id) + 1 : 1;
+        seeder.Categories.Add(entity);
+        return Task.CompletedTask;
+    }
+
+    /// <inheritdoc />
+    public Task Update(DishCategory entity)
+    {
+        var existing = seeder.Categories.FirstOrDefault(c => c.Id == entity.Id);
+        if (existing != null) existing.Name = entity.Name;
+        return Task.CompletedTask;
+    }
+
+    /// <inheritdoc />
+    public Task Delete(int id)
+    {
+        var existing = seeder.Categories.FirstOrDefault(c => c.Id == id);
+        if (existing != null) seeder.Categories.Remove(existing);
+        return Task.CompletedTask;
+    }
+
+    /// <inheritdoc />
+    public Task<bool> IsExists(int id) => Task.FromResult(seeder.Categories.Any(c => c.Id == id));
+}

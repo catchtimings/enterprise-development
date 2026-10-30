@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FoodDelivery.Application\FoodDelivery.Application.csproj" />
+    <ProjectReference Include="..\FoodDelivery.Infrastructure.InMemory\FoodDelivery.Infrastructure.InMemory.csproj" />
   </ItemGroup>
 
 </Project>

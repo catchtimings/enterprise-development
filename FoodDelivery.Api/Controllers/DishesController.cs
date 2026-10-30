@@ -1,6 +1,5 @@
-﻿using FoodDelivery.Contracts.Dtos.Dishes;
-using FoodDelivery.Domain;
-using FoodDelivery.Domain.Entities;
+﻿using FoodDelivery.Application.Services;
+using FoodDelivery.Contracts.Dtos.Dishes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodDelivery.Api.Controllers;
@@ -8,116 +7,57 @@ namespace FoodDelivery.Api.Controllers;
 /// <summary>
 /// Контроллер для управления блюдами
 /// </summary>
-/// <param name="seeder">Хранилище тестовых данных</param>
-/// <param name="logger">Логгер событий</param>
+/// <param name="dishService">Сервис блюд</param>
 [ApiController]
 [Route("api/dishes")]
-public class DishesController(DataSeeder seeder, ILogger<DishesController> logger) : ControllerBase
+public class DishesController(DishService dishService) : ControllerBase
 {
     /// <summary>
     /// Возвращает список всех блюд
     /// </summary>
     [HttpGet]
-    public ActionResult<IEnumerable<DishDto>> GetAll()
+    public async Task<ActionResult<IEnumerable<DishDto>>> GetAll()
     {
-        logger.LogInformation("Получение полного списка блюд");
-        return Ok(seeder.Dishes.Select(MapToDto).ToList());
+        return Ok(await dishService.GetAll());
     }
 
     /// <summary>
-    /// Возвращает блюдо по его уникальному идентификатору
+    /// Возвращает блюдо по идентификатору
     /// </summary>
     [HttpGet("{id:int}")]
-    public ActionResult<DishDto> GetById(int id)
+    public async Task<ActionResult<DishDto>> GetById(int id)
     {
-        var dish = seeder.Dishes.FirstOrDefault(d => d.Id == id);
-        if (dish == null)
-        {
-            logger.LogWarning("Блюдо с Id {Id} не найдено", id);
-            return NotFound();
-        }
-        return Ok(MapToDto(dish));
+        var result = await dishService.Get(id);
+        return result is null ? NotFound() : Ok(result);
     }
 
     /// <summary>
     /// Создает новое блюдо
     /// </summary>
     [HttpPost]
-    public ActionResult<DishDto> Create([FromBody] DishCreateDto dto)
+    public async Task<ActionResult<DishDto>> Create([FromBody] DishCreateDto dto)
     {
-        var category = seeder.Categories.FirstOrDefault(c => c.Id == dto.CategoryId);
-        if (category == null)
-        {
-            logger.LogWarning("Категория с Id {CategoryId} не найдена", dto.CategoryId);
-            return NotFound();
-        }
-
-        var newId = seeder.Dishes.Any() ? seeder.Dishes.Max(d => d.Id) + 1 : 1;
-        var entity = new Dish
-        {
-            Id = newId,
-            Name = dto.Name,
-            Weight = dto.Weight,
-            Price = dto.Price,
-            CategoryId = dto.CategoryId,
-            Category = category
-        };
-
-        seeder.Dishes.Add(entity);
-        logger.LogInformation("Успешно создано блюдо с Id {Id}", newId);
-
-        return CreatedAtAction(nameof(GetById), new { id = newId }, MapToDto(entity));
+        var result = await dishService.Create(dto);
+        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
     }
 
     /// <summary>
-    /// Обновляет существующее блюдо
+    /// Обновляет данные блюда
     /// </summary>
     [HttpPut("{id:int}")]
-    public ActionResult Update(int id, [FromBody] DishCreateDto dto)
+    public async Task<ActionResult> Update(int id, [FromBody] DishCreateDto dto)
     {
-        var item = seeder.Dishes.FirstOrDefault(d => d.Id == id);
-        if (item == null)
-        {
-            logger.LogWarning("Попытка обновления несуществующего блюда с Id {Id}", id);
-            return NotFound();
-        }
-
-        var category = seeder.Categories.FirstOrDefault(c => c.Id == dto.CategoryId);
-        if (category == null)
-        {
-            logger.LogWarning("Категория с Id {CategoryId} не найдена", dto.CategoryId);
-            return NotFound();
-        }
-
-        item.Name = dto.Name;
-        item.Weight = dto.Weight;
-        item.Price = dto.Price;
-        item.CategoryId = dto.CategoryId;
-        item.Category = category;
-
-        logger.LogInformation("Успешно обновлено блюдо с Id {Id}", id);
+        await dishService.Update(id, dto);
         return NoContent();
     }
 
     /// <summary>
-    /// Удаляет блюдо по идентификатору
+    /// Удаляет блюдо
     /// </summary>
     [HttpDelete("{id:int}")]
-    public ActionResult Delete(int id)
+    public async Task<ActionResult> Delete(int id)
     {
-        var item = seeder.Dishes.FirstOrDefault(d => d.Id == id);
-        if (item != null) seeder.Dishes.Remove(item);
-        logger.LogInformation("Успешно удалено блюдо с Id {Id}", id);
+        await dishService.Delete(id);
         return NoContent();
     }
-
-    private static DishDto MapToDto(Dish dish) => new()
-    {
-        Id = dish.Id,
-        Name = dish.Name,
-        Weight = dish.Weight,
-        Price = dish.Price,
-        CategoryId = dish.CategoryId,
-        CategoryName = dish.Category?.Name
-    };
 }
