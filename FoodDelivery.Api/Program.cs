@@ -33,6 +33,8 @@ builder.Services.AddSwaggerGen(c =>
     foreach (var xmlFile in xmlFiles) c.IncludeXmlComments(xmlFile);
 });
 
+builder.Services.AddOpenApi();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

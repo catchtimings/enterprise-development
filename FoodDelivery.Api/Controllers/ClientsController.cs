@@ -17,6 +17,7 @@ public class ClientsController(ClientService clientService, OrderService orderSe
     /// <summary>
     /// Возвращает список всех клиентов
     /// </summary>
+    /// <returns>Список клиентов</returns>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ClientDto>>> GetAll()
     {
@@ -26,6 +27,8 @@ public class ClientsController(ClientService clientService, OrderService orderSe
     /// <summary>
     /// Возвращает клиента по идентификатору
     /// </summary>
+    /// <param name="id">Идентификатор клиента</param>
+    /// <returns>Данные клиента или 404 Not Found</returns>
     [HttpGet("{id:int}")]
     public async Task<ActionResult<ClientDto>> GetById(int id)
     {
@@ -36,6 +39,8 @@ public class ClientsController(ClientService clientService, OrderService orderSe
     /// <summary>
     /// Создает нового клиента
     /// </summary>
+    /// <param name="dto">Данные о клиенте</param>
+    /// <returns>Созданный клиент</returns>
     [HttpPost]
     public async Task<ActionResult<ClientDto>> Create([FromBody] ClientCreateDto dto)
     {
@@ -44,8 +49,11 @@ public class ClientsController(ClientService clientService, OrderService orderSe
     }
 
     /// <summary>
-    /// Обновляет данные клиента
+    /// Обновляет данные клиента по идентификатору
     /// </summary>
+    /// <param name="id">Идентификатор клиента</param>
+    /// <param name="dto">Новые данные о клиенте</param>
+    /// <returns>Статус 204 No Content</returns>
     [HttpPut("{id:int}")]
     public async Task<ActionResult> Update(int id, [FromBody] ClientCreateDto dto)
     {
@@ -54,8 +62,10 @@ public class ClientsController(ClientService clientService, OrderService orderSe
     }
 
     /// <summary>
-    /// Удаляет клиента
+    /// Удаляет клиента по идентификатору
     /// </summary>
+    /// <param name="id">Идентификатор клиента</param>
+    /// <returns>Статус 204 No Content</returns>
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id)
     {
@@ -66,6 +76,8 @@ public class ClientsController(ClientService clientService, OrderService orderSe
     /// <summary>
     /// Возвращает заказы указанного клиента
     /// </summary>
+    /// <param name="id">Идентификатор клиента</param>
+    /// <returns>Список заказов клиента</returns>
     [HttpGet("{id:int}/orders")]
     public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrders(int id)
     {

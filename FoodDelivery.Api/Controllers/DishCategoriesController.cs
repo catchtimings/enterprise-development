@@ -15,6 +15,7 @@ public class DishCategoriesController(DishCategoryService categoryService) : Con
     /// <summary>
     /// Возвращает список всех категорий
     /// </summary>
+    /// <returns>Список категорий</returns>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<DishCategoryDto>>> GetAll()
     {
@@ -24,6 +25,8 @@ public class DishCategoriesController(DishCategoryService categoryService) : Con
     /// <summary>
     /// Возвращает категорию по идентификатору
     /// </summary>
+    /// <param name="id">Идентификатор категории</param>
+    /// <returns>Данные категории или 404 Not Found</returns>
     [HttpGet("{id:int}")]
     public async Task<ActionResult<DishCategoryDto>> GetById(int id)
     {

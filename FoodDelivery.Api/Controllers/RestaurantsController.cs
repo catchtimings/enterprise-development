@@ -15,6 +15,7 @@ public class RestaurantsController(RestaurantService restaurantService) : Contro
     /// <summary>
     /// Возвращает список всех ресторанов
     /// </summary>
+    /// <returns>Список ресторанов</returns>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<RestaurantDto>>> GetAll()
     {
@@ -24,6 +25,8 @@ public class RestaurantsController(RestaurantService restaurantService) : Contro
     /// <summary>
     /// Возвращает ресторан по идентификатору
     /// </summary>
+    /// <param name="id">Идентификатор ресторана</param>
+    /// <returns>Данные ресторана или 404 Not Found</returns>
     [HttpGet("{id:int}")]
     public async Task<ActionResult<RestaurantDto>> GetById(int id)
     {
@@ -34,6 +37,8 @@ public class RestaurantsController(RestaurantService restaurantService) : Contro
     /// <summary>
     /// Создает новый ресторан
     /// </summary>
+    /// <param name="dto">Данные о ресторане</param>
+    /// <returns>Созданный ресторан</returns>
     [HttpPost]
     public async Task<ActionResult<RestaurantDto>> Create([FromBody] RestaurantCreateDto dto)
     {
@@ -42,8 +47,11 @@ public class RestaurantsController(RestaurantService restaurantService) : Contro
     }
 
     /// <summary>
-    /// Обновляет данные ресторана
+    /// Обновляет данные ресторана по идентификатору
     /// </summary>
+    /// <param name="id">Идентификатор ресторана</param>
+    /// <param name="dto">Новые данные о ресторане</param>
+    /// <returns>Статус 204 No Content</returns>
     [HttpPut("{id:int}")]
     public async Task<ActionResult> Update(int id, [FromBody] RestaurantCreateDto dto)
     {
@@ -52,8 +60,10 @@ public class RestaurantsController(RestaurantService restaurantService) : Contro
     }
 
     /// <summary>
-    /// Удаляет ресторан
+    /// Удаляет ресторан по идентификатору
     /// </summary>
+    /// <param name="id">Идентификатор ресторана</param>
+    /// <returns>Статус 204 No Content</returns>
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id)
     {

@@ -15,6 +15,7 @@ public class OrdersController(OrderService orderService) : ControllerBase
     /// <summary>
     /// Возвращает список всех заказов
     /// </summary>
+    /// <returns>Список заказов</returns>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<OrderDto>>> GetAll()
     {
@@ -24,6 +25,8 @@ public class OrdersController(OrderService orderService) : ControllerBase
     /// <summary>
     /// Возвращает заказ по идентификатору
     /// </summary>
+    /// <param name="id">Идентификатор заказа</param>
+    /// <returns>Данные заказа или 404 Not Found</returns>
     [HttpGet("{id:int}")]
     public async Task<ActionResult<OrderDto>> GetById(int id)
     {
@@ -34,6 +37,8 @@ public class OrdersController(OrderService orderService) : ControllerBase
     /// <summary>
     /// Создает новый заказ
     /// </summary>
+    /// <param name="dto">Данные о заказе</param>
+    /// <returns>Созданный заказ</returns>
     [HttpPost]
     public async Task<ActionResult<OrderDto>> Create([FromBody] OrderCreateDto dto)
     {
@@ -42,8 +47,11 @@ public class OrdersController(OrderService orderService) : ControllerBase
     }
 
     /// <summary>
-    /// Обновляет данные заказа
+    /// Обновляет данные заказа по идентификатору
     /// </summary>
+    /// <param name="id">Идентификатор заказа</param>
+    /// <param name="dto">Новые данные о заказе</param>
+    /// <returns>Статус 204 No Content</returns>
     [HttpPut("{id:int}")]
     public async Task<ActionResult> Update(int id, [FromBody] OrderCreateDto dto)
     {
@@ -52,8 +60,10 @@ public class OrdersController(OrderService orderService) : ControllerBase
     }
 
     /// <summary>
-    /// Удаляет заказ
+    /// Удаляет заказ по идентификатору
     /// </summary>
+    /// <param name="id">Идентификатор заказа</param>
+    /// <returns>Статус 204 No Content</returns>
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id)
     {
@@ -64,6 +74,8 @@ public class OrdersController(OrderService orderService) : ControllerBase
     /// <summary>
     /// Возвращает позиции указанного заказа
     /// </summary>
+    /// <param name="id">Идентификатор заказа</param>
+    /// <returns>Список позиций заказа</returns>
     [HttpGet("{id:int}/items")]
     public async Task<ActionResult<IEnumerable<OrderItemDto>>> GetItems(int id)
     {
