@@ -8,40 +8,23 @@ namespace FoodDelivery.Application.Mappers;
 /// </summary>
 public static class OrderMapper
 {
-    /// <summary>
-    /// Преобразует позицию заказа в DTO
-    /// </summary>
-    public static OrderItemDto ToDto(OrderItem entity) => new()
-    {
-        Id = entity.Id,
-        OrderId = entity.OrderId,
-        DishId = entity.DishId,
-        DishName = entity.Dish?.Name,
-        Quantity = entity.Quantity,
-        PriceAtOrder = entity.PriceAtOrder
-    };
+    public static OrderItemDto Map(OrderItem entity)
+        => new(entity.Id, entity.OrderId, entity.DishId, entity.Dish?.Name, entity.Quantity, entity.PriceAtOrder);
 
-    /// <summary>
-    /// Преобразует заказ в DTO
-    /// </summary>
-    public static OrderDto ToDto(Order entity) => new()
-    {
-        Id = entity.Id,
-        ClientId = entity.ClientId,
-        ClientName = entity.Client?.FullName,
-        RestaurantId = entity.RestaurantId,
-        RestaurantName = entity.Restaurant?.Name,
-        CreatedAt = entity.CreatedAt,
-        DeliveredAt = entity.DeliveredAt,
-        TotalAmount = entity.TotalAmount,
-        DeliveryDuration = entity.DeliveryDuration,
-        Items = entity.Items.Select(ToDto).ToList()
-    };
+    public static OrderDto Map(Order entity) => new(
+        entity.Id,
+        entity.ClientId,
+        entity.Client?.FullName,
+        entity.RestaurantId,
+        entity.Restaurant?.Name,
+        entity.CreatedAt,
+        entity.DeliveredAt,
+        entity.TotalAmount,
+        entity.DeliveryDuration,
+        entity.Items.Select(Map).ToList()
+    );
 
-    /// <summary>
-    /// Создает позицию заказа из DTO
-    /// </summary>
-    public static OrderItem ToEntity(OrderItemCreateDto dto) => new()
+    public static OrderItem Map(OrderItemCreateDto dto) => new()
     {
         Id = 0,
         OrderId = 0,
@@ -49,4 +32,6 @@ public static class OrderMapper
         Quantity = dto.Quantity,
         PriceAtOrder = 0
     };
+
+    public static List<OrderDto> Map(List<Order> entities) => [.. entities.Select(Map)];
 }

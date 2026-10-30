@@ -4,16 +4,11 @@ using FoodDelivery.Domain.Entities;
 namespace FoodDelivery.Application.Mappers;
 
 /// <summary>
-/// Преобразует сущность DishCategory в DTO
+/// Преобразует сущности DishCategory в DTO
 /// </summary>
 public static class DishCategoryMapper
 {
-    /// <summary>
-    /// Преобразует сущность в DTO
-    /// </summary>
-    public static DishCategoryDto ToDto(DishCategory entity) => new()
-    {
-        Id = entity.Id,
-        Name = entity.Name
-    };
+    public static DishCategoryDto Map(DishCategory entity) => new(entity.Id, entity.Name);
+
+    public static List<DishCategoryDto> Map(List<DishCategory> entities) => [.. entities.Select(Map)];
 }

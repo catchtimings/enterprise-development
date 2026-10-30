@@ -32,11 +32,10 @@ public class AnalyticsService(
             .OrderByDescending(x => x.OrderCount)
             .ThenBy(x => x.Restaurant!.Id)
             .Take(5)
-            .Select(x => new RestaurantWithOrderCountDto
-            {
-                Restaurant = RestaurantMapper.ToDto(x.Restaurant!),
-                OrderCount = x.OrderCount
-            })
+            .Select(x => new RestaurantWithOrderCountDto(
+                RestaurantMapper.Map(x.Restaurant!),
+                x.OrderCount
+            ))
             .ToList();
     }
 
@@ -48,20 +47,16 @@ public class AnalyticsService(
         var orders = await orderRepository.GetAll();
         if (!orders.Any())
         {
-            return new MinDeliveryTimeOrdersDto { MinDeliveryTime = TimeSpan.Zero, Orders = [] };
+            return new MinDeliveryTimeOrdersDto(TimeSpan.Zero, []);
         }
 
         var minDuration = orders.Min(o => o.DeliveryDuration);
         var result = orders
             .Where(o => o.DeliveryDuration == minDuration)
-            .Select(OrderMapper.ToDto)
+            .Select(OrderMapper.Map)
             .ToList();
 
-        return new MinDeliveryTimeOrdersDto
-        {
-            MinDeliveryTime = minDuration,
-            Orders = result
-        };
+        return new MinDeliveryTimeOrdersDto(minDuration, result);
     }
 
     /// <summary>
@@ -78,7 +73,7 @@ public class AnalyticsService(
             .OrderBy(c => c.FullName)
             .ToList();
 
-        return clients.Select(ClientMapper.ToDto);
+        return ClientMapper.Map(clients);
     }
 
     /// <summary>
@@ -93,13 +88,12 @@ public class AnalyticsService(
             .SelectMany(o => o.Items)
             .Where(item => item.Dish?.Category != null)
             .GroupBy(item => item.Dish!.Category!)
-            .Select(g => new CategorySummaryDto
-            {
-                CategoryName = g.Key.Name,
-                OrderCount = g.Select(item => item.OrderId).Distinct().Count(),
-                AverageSum = g.Average(item => item.Quantity * item.PriceAtOrder),
-                TotalSum = g.Sum(item => item.Quantity * item.PriceAtOrder)
-            })
+            .Select(g => new CategorySummaryDto(
+                g.Key.Name,
+                g.Select(item => item.OrderId).Distinct().Count(),
+                g.Average(item => item.Quantity * item.PriceAtOrder),
+                g.Sum(item => item.Quantity * item.PriceAtOrder)
+            ))
             .OrderBy(s => s.CategoryName)
             .ToList();
     }
@@ -124,11 +118,10 @@ public class AnalyticsService(
         return clientSpending
             .Where(x => x.TotalSpent == maxTotalSpent)
             .OrderBy(x => x.Client.Id)
-            .Select(x => new TopSpenderDto
-            {
-                Client = ClientMapper.ToDto(x.Client),
-                TotalSpent = x.TotalSpent
-            })
+            .Select(x => new TopSpenderDto(
+                ClientMapper.Map(x.Client),
+                x.TotalSpent
+            ))
             .ToList();
     }
 }

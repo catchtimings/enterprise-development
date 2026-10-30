@@ -5,23 +5,14 @@ namespace FoodDelivery.Contracts.Dtos.Clients;
 /// <summary>
 /// DTO для создания или обновления клиента
 /// </summary>
-public class ClientCreateDto
-{
-    /// <summary>
-    /// Полное имя клиента (ФИО)
-    /// </summary>
-    [Required(ErrorMessage = "ФИО клиента обязательно для заполнения")]
-    public required string FullName { get; set; }
-
-    /// <summary>
-    /// Контактный номер телефона
-    /// </summary>
-    [Required(ErrorMessage = "Номер телефона обязателен для заполнения")]
-    public required string PhoneNumber { get; set; }
-
-    /// <summary>
-    /// Адрес доставки по умолчанию
-    /// </summary>
-    [Required(ErrorMessage = "Адрес доставки обязателен для заполнения")]
-    public required string DeliveryAddress { get; set; }
-}
+/// <param name="FullName">Полное имя клиента (ФИО)</param>
+/// <param name="PhoneNumber">Контактный номер телефона</param>
+/// <param name="DeliveryAddress">Адрес доставки по умолчанию</param>
+public record ClientCreateDto(
+    [property: Required(ErrorMessage = "ФИО клиента обязательно для заполнения")]
+    string FullName,
+    [property: Required(ErrorMessage = "Номер телефона обязателен для заполнения")]
+    string PhoneNumber,
+    [property: Required(ErrorMessage = "Адрес доставки обязателен для заполнения")]
+    string DeliveryAddress
+);

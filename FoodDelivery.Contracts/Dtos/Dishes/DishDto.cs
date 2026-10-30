@@ -3,35 +3,10 @@
 /// <summary>
 /// DTO блюда ресторана
 /// </summary>
-public class DishDto
-{
-    /// <summary>
-    /// Идентификатор блюда
-    /// </summary>
-    public int Id { get; set; }
-
-    /// <summary>
-    /// Название блюда
-    /// </summary>
-    public required string Name { get; set; }
-
-    /// <summary>
-    /// Вес блюда в граммах
-    /// </summary>
-    public int Weight { get; set; }
-
-    /// <summary>
-    /// Цена блюда в рублях
-    /// </summary>
-    public decimal Price { get; set; }
-
-    /// <summary>
-    /// Идентификатор категории блюда
-    /// </summary>
-    public int CategoryId { get; set; }
-
-    /// <summary>
-    /// Название категории блюда
-    /// </summary>
-    public string? CategoryName { get; set; }
-}
+/// <param name="Id">Идентификатор блюда</param>
+/// <param name="Name">Название блюда</param>
+/// <param name="Weight">Вес блюда в граммах</param>
+/// <param name="Price">Цена блюда в рублях</param>
+/// <param name="CategoryId">Идентификатор категории блюда</param>
+/// <param name="CategoryName">Название категории блюда</param>
+public record DishDto(int Id, string Name, int Weight, decimal Price, int CategoryId, string? CategoryName);

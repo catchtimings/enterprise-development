@@ -4,29 +4,20 @@ using FoodDelivery.Domain.Entities;
 namespace FoodDelivery.Application.Mappers;
 
 /// <summary>
-/// Преобразует сущность Client в DTO и обратно
+/// Преобразует сущности Client в DTO и обратно
 /// </summary>
 public static class ClientMapper
 {
-    /// <summary>
-    /// Преобразует сущность в DTO
-    /// </summary>
-    public static ClientDto ToDto(Client entity) => new()
-    {
-        Id = entity.Id,
-        FullName = entity.FullName,
-        PhoneNumber = entity.PhoneNumber,
-        DeliveryAddress = entity.DeliveryAddress
-    };
+    public static ClientDto Map(Client entity)
+        => new(entity.Id, entity.FullName, entity.PhoneNumber, entity.DeliveryAddress);
 
-    /// <summary>
-    /// Создает сущность из DTO
-    /// </summary>
-    public static Client ToEntity(ClientCreateDto dto) => new()
+    public static Client Map(ClientCreateDto dto) => new()
     {
         Id = 0,
         FullName = dto.FullName,
         PhoneNumber = dto.PhoneNumber,
         DeliveryAddress = dto.DeliveryAddress
     };
+
+    public static List<ClientDto> Map(List<Client> entities) => [.. entities.Select(Map)];
 }

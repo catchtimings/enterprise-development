@@ -1,27 +1,10 @@
 ﻿namespace FoodDelivery.Contracts.Dtos.Clients;
 
 /// <summary>
-/// DTO клиента службы доставки
+/// Клиент службы доставки
 /// </summary>
-public class ClientDto
-{
-    /// <summary>
-    /// Уникальный идентификатор клиента
-    /// </summary>
-    public int Id { get; set; }
-
-    /// <summary>
-    /// Полное имя клиента (ФИО)
-    /// </summary>
-    public required string FullName { get; set; }
-
-    /// <summary>
-    /// Контактный номер телефона
-    /// </summary>
-    public required string PhoneNumber { get; set; }
-
-    /// <summary>
-    /// Адрес доставки по умолчанию
-    /// </summary>
-    public required string DeliveryAddress { get; set; }
-}
+/// <param name="Id">Уникальный идентификатор клиента</param>
+/// <param name="FullName">Полное имя клиента (ФИО)</param>
+/// <param name="PhoneNumber">Контактный номер телефона</param>
+/// <param name="DeliveryAddress">Адрес доставки по умолчанию</param>
+public record ClientDto(int Id, string FullName, string PhoneNumber, string DeliveryAddress);

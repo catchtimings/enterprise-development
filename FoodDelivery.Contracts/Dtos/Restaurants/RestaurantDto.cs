@@ -3,35 +3,10 @@
 /// <summary>
 /// DTO ресторана службы доставки
 /// </summary>
-public class RestaurantDto
-{
-    /// <summary>
-    /// Уникальный идентификатор ресторана
-    /// </summary>
-    public int Id { get; set; }
-
-    /// <summary>
-    /// Название ресторана
-    /// </summary>
-    public required string Name { get; set; }
-
-    /// <summary>
-    /// Физический адрес ресторана
-    /// </summary>
-    public required string Address { get; set; }
-
-    /// <summary>
-    /// Рейтинг ресторана
-    /// </summary>
-    public double Rating { get; set; }
-
-    /// <summary>
-    /// Время открытия ресторана
-    /// </summary>
-    public TimeOnly OpeningTime { get; set; }
-
-    /// <summary>
-    /// Время закрытия ресторана
-    /// </summary>
-    public TimeOnly ClosingTime { get; set; }
-}
+/// <param name="Id">Уникальный идентификатор ресторана</param>
+/// <param name="Name">Название ресторана</param>
+/// <param name="Address">Физический адрес ресторана</param>
+/// <param name="Rating">Рейтинг ресторана</param>
+/// <param name="OpeningTime">Время открытия ресторана</param>
+/// <param name="ClosingTime">Время закрытия ресторана</param>
+public record RestaurantDto(int Id, string Name, string Address, double Rating, TimeOnly OpeningTime, TimeOnly ClosingTime);

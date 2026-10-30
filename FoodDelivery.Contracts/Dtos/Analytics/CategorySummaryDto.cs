@@ -1,27 +1,10 @@
 ﻿namespace FoodDelivery.Contracts.Dtos.Analytics;
 
 /// <summary>
-/// DTO сводной информации по категориям блюд
+/// Сводная информация по категориям блюд
 /// </summary>
-public class CategorySummaryDto
-{
-    /// <summary>
-    /// Название категории блюд
-    /// </summary>
-    public required string CategoryName { get; set; }
-
-    /// <summary>
-    /// Количество уникальных заказов с блюдами данной категории
-    /// </summary>
-    public int OrderCount { get; set; }
-
-    /// <summary>
-    /// Средняя сумма чека по категории
-    /// </summary>
-    public decimal AverageSum { get; set; }
-
-    /// <summary>
-    /// Общая сумма заказов по категории за период
-    /// </summary>
-    public decimal TotalSum { get; set; }
-}
+/// <param name="CategoryName">Название категории блюд</param>
+/// <param name="OrderCount">Количество уникальных заказов с блюдами данной категории</param>
+/// <param name="AverageSum">Средняя сумма чека по категории</param>
+/// <param name="TotalSum">Общая сумма заказов по категории за период</param>
+public record CategorySummaryDto(string CategoryName, int OrderCount, decimal AverageSum, decimal TotalSum);

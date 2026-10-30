@@ -15,9 +15,9 @@ public class RestaurantService(IRepository<Restaurant> restaurantRepository)
     /// </summary>
     public async Task<RestaurantDto> Create(RestaurantCreateDto dto)
     {
-        var restaurant = RestaurantMapper.ToEntity(dto);
+        var restaurant = RestaurantMapper.Map(dto);
         await restaurantRepository.Add(restaurant);
-        return RestaurantMapper.ToDto(restaurant);
+        return RestaurantMapper.Map(restaurant);
     }
 
     /// <summary>
@@ -26,7 +26,7 @@ public class RestaurantService(IRepository<Restaurant> restaurantRepository)
     public async Task<RestaurantDto?> Get(int id)
     {
         var restaurant = await restaurantRepository.GetById(id);
-        return restaurant is null ? null : RestaurantMapper.ToDto(restaurant);
+        return restaurant is null ? null : RestaurantMapper.Map(restaurant);
     }
 
     /// <summary>
@@ -35,7 +35,7 @@ public class RestaurantService(IRepository<Restaurant> restaurantRepository)
     public async Task<IEnumerable<RestaurantDto>> GetAll()
     {
         var restaurants = await restaurantRepository.GetAll();
-        return restaurants.Select(RestaurantMapper.ToDto);
+        return RestaurantMapper.Map(restaurants.ToList());
     }
 
     /// <summary>
@@ -53,7 +53,7 @@ public class RestaurantService(IRepository<Restaurant> restaurantRepository)
         existing.ClosingTime = dto.ClosingTime;
 
         await restaurantRepository.Update(existing);
-        return RestaurantMapper.ToDto(existing);
+        return RestaurantMapper.Map(existing);
     }
 
     /// <summary>

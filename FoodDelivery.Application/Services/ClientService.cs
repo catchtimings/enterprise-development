@@ -15,9 +15,9 @@ public class ClientService(IRepository<Client> clientRepository)
     /// </summary>
     public async Task<ClientDto> Create(ClientCreateDto dto)
     {
-        var client = ClientMapper.ToEntity(dto);
+        var client = ClientMapper.Map(dto);
         await clientRepository.Add(client);
-        return ClientMapper.ToDto(client);
+        return ClientMapper.Map(client);
     }
 
     /// <summary>
@@ -26,7 +26,7 @@ public class ClientService(IRepository<Client> clientRepository)
     public async Task<ClientDto?> Get(int id)
     {
         var client = await clientRepository.GetById(id);
-        return client is null ? null : ClientMapper.ToDto(client);
+        return client is null ? null : ClientMapper.Map(client);
     }
 
     /// <summary>
@@ -35,7 +35,7 @@ public class ClientService(IRepository<Client> clientRepository)
     public async Task<IEnumerable<ClientDto>> GetAll()
     {
         var clients = await clientRepository.GetAll();
-        return clients.Select(ClientMapper.ToDto);
+        return ClientMapper.Map(clients.ToList());
     }
 
     /// <summary>
@@ -51,7 +51,7 @@ public class ClientService(IRepository<Client> clientRepository)
         existing.DeliveryAddress = dto.DeliveryAddress;
 
         await clientRepository.Update(existing);
-        return ClientMapper.ToDto(existing);
+        return ClientMapper.Map(existing);
     }
 
     /// <summary>

@@ -3,55 +3,25 @@
 /// <summary>
 /// DTO заказа клиента
 /// </summary>
-public class OrderDto
-{
-    /// <summary>
-    /// Идентификатор заказа
-    /// </summary>
-    public int Id { get; set; }
-
-    /// <summary>
-    /// Идентификатор клиента
-    /// </summary>
-    public int ClientId { get; set; }
-
-    /// <summary>
-    /// ФИО клиента, оформившего заказ
-    /// </summary>
-    public string? ClientName { get; set; }
-
-    /// <summary>
-    /// Идентификатор ресторана
-    /// </summary>
-    public int RestaurantId { get; set; }
-
-    /// <summary>
-    /// Название ресторана, исполняющего заказ
-    /// </summary>
-    public string? RestaurantName { get; set; }
-
-    /// <summary>
-    /// Дата и время оформления заказа
-    /// </summary>
-    public DateTime CreatedAt { get; set; }
-
-    /// <summary>
-    /// Дата и время доставки
-    /// </summary>
-    public DateTime DeliveredAt { get; set; }
-
-    /// <summary>
-    /// Итоговая сумма заказа в рублях
-    /// </summary>
-    public decimal TotalAmount { get; set; }
-
-    /// <summary>
-    /// Время, затраченное на доставку
-    /// </summary>
-    public TimeSpan DeliveryDuration { get; set; }
-
-    /// <summary>
-    /// Список позиций заказа
-    /// </summary>
-    public List<OrderItemDto> Items { get; set; } = [];
-}
+/// <param name="Id">Идентификатор заказа</param>
+/// <param name="ClientId">Идентификатор клиента</param>
+/// <param name="ClientName">ФИО клиента, оформившего заказ</param>
+/// <param name="RestaurantId">Идентификатор ресторана</param>
+/// <param name="RestaurantName">Название ресторана, исполняющего заказ</param>
+/// <param name="CreatedAt">Дата и время оформления заказа</param>
+/// <param name="DeliveredAt">Дата и время доставки</param>
+/// <param name="TotalAmount">Итоговая сумма заказа в рублях</param>
+/// <param name="DeliveryDuration">Время, затраченное на доставку</param>
+/// <param name="Items">Список позиций заказа</param>
+public record OrderDto(
+    int Id,
+    int ClientId,
+    string? ClientName,
+    int RestaurantId,
+    string? RestaurantName,
+    DateTime CreatedAt,
+    DateTime DeliveredAt,
+    decimal TotalAmount,
+    TimeSpan DeliveryDuration,
+    List<OrderItemDto> Items
+);

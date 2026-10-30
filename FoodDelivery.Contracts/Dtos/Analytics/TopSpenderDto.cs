@@ -3,17 +3,8 @@
 namespace FoodDelivery.Contracts.Dtos.Analytics;
 
 /// <summary>
-/// DTO клиента с максимальной суммой трат
+/// Клиент с максимальной суммой трат
 /// </summary>
-public class TopSpenderDto
-{
-    /// <summary>
-    /// Сведения о клиенте
-    /// </summary>
-    public required ClientDto Client { get; set; }
-
-    /// <summary>
-    /// Общая потраченная сумма за всё время
-    /// </summary>
-    public decimal TotalSpent { get; set; }
-}
+/// <param name="Client">Сведения о клиенте</param>
+/// <param name="TotalSpent">Общая потраченная сумма за всё время</param>
+public record TopSpenderDto(ClientDto Client, decimal TotalSpent);

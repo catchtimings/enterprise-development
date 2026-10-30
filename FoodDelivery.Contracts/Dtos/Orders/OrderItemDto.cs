@@ -3,35 +3,10 @@
 /// <summary>
 /// DTO позиции заказа
 /// </summary>
-public class OrderItemDto
-{
-    /// <summary>
-    /// Идентификатор позиции
-    /// </summary>
-    public int Id { get; set; }
-
-    /// <summary>
-    /// Идентификатор заказа
-    /// </summary>
-    public int OrderId { get; set; }
-
-    /// <summary>
-    /// Идентификатор блюда
-    /// </summary>
-    public int DishId { get; set; }
-
-    /// <summary>
-    /// Название блюда
-    /// </summary>
-    public string? DishName { get; set; }
-
-    /// <summary>
-    /// Количество порций
-    /// </summary>
-    public int Quantity { get; set; }
-
-    /// <summary>
-    /// Фиксированная цена блюда на момент оформления заказа
-    /// </summary>
-    public decimal PriceAtOrder { get; set; }
-}
+/// <param name="Id">Уникальный идентификатор позиции заказа</param>
+/// <param name="OrderId">Идентификатор заказа</param>
+/// <param name="DishId">Идентификатор блюда</param>
+/// <param name="DishName">Название блюда</param>
+/// <param name="Quantity">Количество единиц блюда</param>
+/// <param name="PriceAtOrder">Фиксированная цена блюда на момент оформления заказа</param>
+public record OrderItemDto(int Id, int OrderId, int DishId, string? DishName, int Quantity, decimal PriceAtOrder);

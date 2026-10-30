@@ -5,33 +5,18 @@ namespace FoodDelivery.Contracts.Dtos.Restaurants;
 /// <summary>
 /// DTO для создания или обновления ресторана
 /// </summary>
-public class RestaurantCreateDto
-{
-    /// <summary>
-    /// Название ресторана
-    /// </summary>
-    [Required(ErrorMessage = "Название ресторана обязательно для заполнения")]
-    public required string Name { get; set; }
-
-    /// <summary>
-    /// Физический адрес ресторана
-    /// </summary>
-    [Required(ErrorMessage = "Адрес ресторана обязателен для заполнения")]
-    public required string Address { get; set; }
-
-    /// <summary>
-    /// Рейтинг ресторана (от 0 до 5)
-    /// </summary>
-    [Range(0, 5, ErrorMessage = "Рейтинг должен находиться в диапазоне от 0 до 5")]
-    public double Rating { get; set; }
-
-    /// <summary>
-    /// Время открытия ресторана
-    /// </summary>
-    public TimeOnly OpeningTime { get; set; }
-
-    /// <summary>
-    /// Время закрытия ресторана
-    /// </summary>
-    public TimeOnly ClosingTime { get; set; }
-}
+/// <param name="Name">Название ресторана</param>
+/// <param name="Address">Физический адрес ресторана</param>
+/// <param name="Rating">Рейтинг ресторана</param>
+/// <param name="OpeningTime">Время открытия ресторана</param>
+/// <param name="ClosingTime">Время закрытия ресторана</param>
+public record RestaurantCreateDto(
+    [property: Required(ErrorMessage = "Название ресторана обязательно для заполнения")]
+    string Name,
+    [property: Required(ErrorMessage = "Адрес ресторана обязателен для заполнения")]
+    string Address,
+    [property: Range(0, 5, ErrorMessage = "Рейтинг должен находиться в диапазоне от 0 до 5")]
+    double Rating,
+    TimeOnly OpeningTime,
+    TimeOnly ClosingTime
+);

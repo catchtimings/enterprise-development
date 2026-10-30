@@ -20,11 +20,11 @@ public class DishService(
         var category = await categoryRepository.GetById(dto.CategoryId)
             ?? throw new KeyNotFoundException("Категория не найдена");
 
-        var dish = DishMapper.ToEntity(dto);
+        var dish = DishMapper.Map(dto);
         dish.Category = category;
 
         await dishRepository.Add(dish);
-        return DishMapper.ToDto(dish);
+        return DishMapper.Map(dish);
     }
 
     /// <summary>
@@ -33,7 +33,7 @@ public class DishService(
     public async Task<DishDto?> Get(int id)
     {
         var dish = await dishRepository.GetById(id);
-        return dish is null ? null : DishMapper.ToDto(dish);
+        return dish is null ? null : DishMapper.Map(dish);
     }
 
     /// <summary>
@@ -42,7 +42,7 @@ public class DishService(
     public async Task<IEnumerable<DishDto>> GetAll()
     {
         var dishes = await dishRepository.GetAll();
-        return dishes.Select(DishMapper.ToDto);
+        return DishMapper.Map(dishes.ToList());
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public class DishService(
         existing.Category = category;
 
         await dishRepository.Update(existing);
-        return DishMapper.ToDto(existing);
+        return DishMapper.Map(existing);
     }
 
     /// <summary>

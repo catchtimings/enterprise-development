@@ -16,7 +16,7 @@ public class DishCategoryService(IRepository<DishCategory> categoryRepository)
     public async Task<DishCategoryDto?> Get(int id)
     {
         var category = await categoryRepository.GetById(id);
-        return category is null ? null : DishCategoryMapper.ToDto(category);
+        return category is null ? null : DishCategoryMapper.Map(category);
     }
 
     /// <summary>
@@ -25,6 +25,6 @@ public class DishCategoryService(IRepository<DishCategory> categoryRepository)
     public async Task<IEnumerable<DishCategoryDto>> GetAll()
     {
         var categories = await categoryRepository.GetAll();
-        return categories.Select(DishCategoryMapper.ToDto);
+        return DishCategoryMapper.Map(categories.ToList());
     }
 }

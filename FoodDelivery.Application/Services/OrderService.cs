@@ -30,7 +30,7 @@ public class OrderService(
             var dish = await dishRepository.GetById(itemDto.DishId)
                 ?? throw new KeyNotFoundException($"Блюдо {itemDto.DishId} не найдено");
 
-            var item = OrderMapper.ToEntity(itemDto);
+            var item = OrderMapper.Map(itemDto);
             item.Dish = dish;
             item.PriceAtOrder = dish.Price;
             items.Add(item);
@@ -50,7 +50,7 @@ public class OrderService(
         order.TotalAmount = order.Items.Sum(i => i.Quantity * i.PriceAtOrder);
 
         await orderRepository.Add(order);
-        return OrderMapper.ToDto(order);
+        return OrderMapper.Map(order);
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ public class OrderService(
     public async Task<OrderDto?> Get(int id)
     {
         var order = await orderRepository.GetById(id);
-        return order is null ? null : OrderMapper.ToDto(order);
+        return order is null ? null : OrderMapper.Map(order);
     }
 
     /// <summary>
@@ -68,7 +68,7 @@ public class OrderService(
     public async Task<IEnumerable<OrderDto>> GetAll()
     {
         var orders = await orderRepository.GetAll();
-        return orders.Select(OrderMapper.ToDto);
+        return OrderMapper.Map(orders.ToList());
     }
 
     /// <summary>
@@ -89,7 +89,7 @@ public class OrderService(
             var dish = await dishRepository.GetById(itemDto.DishId)
                 ?? throw new KeyNotFoundException($"Блюдо {itemDto.DishId} не найдено");
 
-            var item = OrderMapper.ToEntity(itemDto);
+            var item = OrderMapper.Map(itemDto);
             item.OrderId = id;
             item.Dish = dish;
             item.PriceAtOrder = dish.Price;
@@ -105,7 +105,7 @@ public class OrderService(
         existing.TotalAmount = existing.Items.Sum(i => i.Quantity * i.PriceAtOrder);
 
         await orderRepository.Update(existing);
-        return OrderMapper.ToDto(existing);
+        return OrderMapper.Map(existing);
     }
 
     /// <summary>
@@ -121,6 +121,6 @@ public class OrderService(
         var order = await orderRepository.GetById(orderId)
             ?? throw new KeyNotFoundException("Заказ не найден");
 
-        return order.Items.Select(OrderMapper.ToDto);
+        return order.Items.Select(OrderMapper.Map);
     }
 }
