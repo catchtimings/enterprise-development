@@ -8,18 +8,30 @@ namespace FoodDelivery.Api.Controllers;
 /// Контроллер для управления ресторанами
 /// </summary>
 /// <param name="restaurantService">Сервис ресторанов</param>
+/// <param name="logger">Логгер</param>
 [ApiController]
 [Route("api/restaurants")]
-public class RestaurantsController(RestaurantService restaurantService) : ControllerBase
+public class RestaurantsController(RestaurantService restaurantService, ILogger<RestaurantsController> logger) : ControllerBase
 {
     /// <summary>
     /// Возвращает список всех ресторанов
     /// </summary>
     /// <returns>Список ресторанов</returns>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<RestaurantDto>>> GetAll()
+    public async Task<ActionResult<IList<RestaurantDto>>> GetAll()
     {
-        return Ok(await restaurantService.GetAll());
+        try
+        {
+            logger.LogInformation("{Time} - Запрос на получение всех ресторанов", DateTime.UtcNow);
+            var result = await restaurantService.GetAll();
+            logger.LogInformation("{Time} - Успешно получен список ресторанов - Response code: 200", DateTime.UtcNow);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "{Time} - Ошибка при получении списка ресторанов - Response code: 500", DateTime.UtcNow);
+            return StatusCode(500, new { message = "Внутренняя ошибка сервера" });
+        }
     }
 
     /// <summary>
@@ -31,7 +43,13 @@ public class RestaurantsController(RestaurantService restaurantService) : Contro
     public async Task<ActionResult<RestaurantDto>> GetById(int id)
     {
         var result = await restaurantService.Get(id);
-        return result is null ? NotFound() : Ok(result);
+        if (result is null)
+        {
+            logger.LogWarning("{Time} - Ресторан с Id {Id} не найден - Response code: 404", DateTime.UtcNow, id);
+            return NotFound(new { message = "Ресторан не найден" });
+        }
+        logger.LogInformation("{Time} - Ресторан с Id {Id} успешно найден - Response code: 200", DateTime.UtcNow, id);
+        return Ok(result);
     }
 
     /// <summary>
@@ -40,10 +58,19 @@ public class RestaurantsController(RestaurantService restaurantService) : Contro
     /// <param name="dto">Данные о ресторане</param>
     /// <returns>Созданный ресторан</returns>
     [HttpPost]
-    public async Task<ActionResult<RestaurantDto>> Create([FromBody] RestaurantCreateDto dto)
+    public async Task<ActionResult<RestaurantDto>> Create([FromBody] RestaurantCreateUpdateDto dto)
     {
-        var result = await restaurantService.Create(dto);
-        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+        try
+        {
+            var result = await restaurantService.Create(dto);
+            logger.LogInformation("{Time} - Создан новый ресторан с Id {Id} - Response code: 201", DateTime.UtcNow, result.Id);
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "{Time} - Ошибка при создании ресторана - Response code: 500", DateTime.UtcNow);
+            return StatusCode(500, new { message = "Внутренняя ошибка сервера" });
+        }
     }
 
     /// <summary>
@@ -51,12 +78,26 @@ public class RestaurantsController(RestaurantService restaurantService) : Contro
     /// </summary>
     /// <param name="id">Идентификатор ресторана</param>
     /// <param name="dto">Новые данные о ресторане</param>
-    /// <returns>Статус 204 No Content</returns>
+    /// <returns>Статус 204 No Content или 404 Not Found</returns>
     [HttpPut("{id:int}")]
-    public async Task<ActionResult> Update(int id, [FromBody] RestaurantCreateDto dto)
+    public async Task<ActionResult> Update(int id, [FromBody] RestaurantCreateUpdateDto dto)
     {
-        await restaurantService.Update(id, dto);
-        return NoContent();
+        try
+        {
+            await restaurantService.Update(id, dto);
+            logger.LogInformation("{Time} - Обновлен ресторан с Id {Id} - Response code: 204", DateTime.UtcNow, id);
+            return NoContent();
+        }
+        catch (KeyNotFoundException ex)
+        {
+            logger.LogWarning(ex, "{Time} - Ресторан с Id {Id} не найден для обновления - Response code: 404", DateTime.UtcNow, id);
+            return NotFound(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "{Time} - Ошибка при обновлении ресторана с Id {Id} - Response code: 500", DateTime.UtcNow, id);
+            return StatusCode(500, new { message = "Внутренняя ошибка сервера" });
+        }
     }
 
     /// <summary>
@@ -67,7 +108,16 @@ public class RestaurantsController(RestaurantService restaurantService) : Contro
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id)
     {
-        await restaurantService.Delete(id);
-        return NoContent();
+        try
+        {
+            await restaurantService.Delete(id);
+            logger.LogInformation("{Time} - Удален ресторан с Id {Id} - Response code: 204", DateTime.UtcNow, id);
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "{Time} - Ошибка при удалении ресторана с Id {Id} - Response code: 500", DateTime.UtcNow, id);
+            return StatusCode(500, new { message = "Внутренняя ошибка сервера" });
+        }
     }
 }

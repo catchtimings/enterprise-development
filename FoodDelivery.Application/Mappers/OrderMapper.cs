@@ -24,7 +24,7 @@ public static class OrderMapper
         entity.Items.Select(Map).ToList()
     );
 
-    public static OrderItem Map(OrderItemCreateDto dto) => new()
+    public static OrderItem Map(OrderItemCreateUpdateDto dto) => new()
     {
         Id = 0,
         OrderId = 0,

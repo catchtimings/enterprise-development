@@ -3,6 +3,7 @@ using FoodDelivery.Application.Services;
 using FoodDelivery.Domain;
 using FoodDelivery.Domain.Entities;
 using FoodDelivery.Infrastructure.InMemory.Repositories;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,12 +27,6 @@ builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<AnalyticsService>();
 
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    var xmlFiles = Directory.GetFiles(AppContext.BaseDirectory, "*.xml");
-    foreach (var xmlFile in xmlFiles) c.IncludeXmlComments(xmlFile);
-});
 
 builder.Services.AddOpenApi();
 
@@ -39,8 +34,8 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.MapOpenApi();
+    app.MapScalarApiReference();
 }
 
 app.UseHttpsRedirection();

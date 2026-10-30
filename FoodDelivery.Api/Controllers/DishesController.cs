@@ -8,18 +8,30 @@ namespace FoodDelivery.Api.Controllers;
 /// Контроллер для управления блюдами
 /// </summary>
 /// <param name="dishService">Сервис блюд</param>
+/// <param name="logger">Логгер</param>
 [ApiController]
 [Route("api/dishes")]
-public class DishesController(DishService dishService) : ControllerBase
+public class DishesController(DishService dishService, ILogger<DishesController> logger) : ControllerBase
 {
     /// <summary>
     /// Возвращает список всех блюд
     /// </summary>
     /// <returns>Список блюд</returns>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<DishDto>>> GetAll()
+    public async Task<ActionResult<IList<DishDto>>> GetAll()
     {
-        return Ok(await dishService.GetAll());
+        try
+        {
+            logger.LogInformation("{Time} - Запрос на получение всех блюд", DateTime.UtcNow);
+            var result = await dishService.GetAll();
+            logger.LogInformation("{Time} - Успешно получен список блюд - Response code: 200", DateTime.UtcNow);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "{Time} - Ошибка при получении списка блюд - Response code: 500", DateTime.UtcNow);
+            return StatusCode(500, new { message = "Внутренняя ошибка сервера" });
+        }
     }
 
     /// <summary>
@@ -31,7 +43,13 @@ public class DishesController(DishService dishService) : ControllerBase
     public async Task<ActionResult<DishDto>> GetById(int id)
     {
         var result = await dishService.Get(id);
-        return result is null ? NotFound() : Ok(result);
+        if (result is null)
+        {
+            logger.LogWarning("{Time} - Блюдо с Id {Id} не найдено - Response code: 404", DateTime.UtcNow, id);
+            return NotFound(new { message = "Блюдо не найдено" });
+        }
+        logger.LogInformation("{Time} - Блюдо с Id {Id} успешно найдено - Response code: 200", DateTime.UtcNow, id);
+        return Ok(result);
     }
 
     /// <summary>
@@ -40,10 +58,24 @@ public class DishesController(DishService dishService) : ControllerBase
     /// <param name="dto">Данные о блюде</param>
     /// <returns>Созданное блюдо</returns>
     [HttpPost]
-    public async Task<ActionResult<DishDto>> Create([FromBody] DishCreateDto dto)
+    public async Task<ActionResult<DishDto>> Create([FromBody] DishCreateUpdateDto dto)
     {
-        var result = await dishService.Create(dto);
-        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+        try
+        {
+            var result = await dishService.Create(dto);
+            logger.LogInformation("{Time} - Создано новое блюдо с Id {Id} - Response code: 201", DateTime.UtcNow, result.Id);
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            logger.LogWarning(ex, "{Time} - Не найдена категория при создании блюда - Response code: 404", DateTime.UtcNow);
+            return NotFound(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "{Time} - Ошибка при создании блюда - Response code: 500", DateTime.UtcNow);
+            return StatusCode(500, new { message = "Внутренняя ошибка сервера" });
+        }
     }
 
     /// <summary>
@@ -53,10 +85,24 @@ public class DishesController(DishService dishService) : ControllerBase
     /// <param name="dto">Новые данные о блюде</param>
     /// <returns>Статус 204 No Content или 404 Not Found</returns>
     [HttpPut("{id:int}")]
-    public async Task<ActionResult> Update(int id, [FromBody] DishCreateDto dto)
+    public async Task<ActionResult> Update(int id, [FromBody] DishCreateUpdateDto dto)
     {
-        await dishService.Update(id, dto);
-        return NoContent();
+        try
+        {
+            await dishService.Update(id, dto);
+            logger.LogInformation("{Time} - Обновлено блюдо с Id {Id} - Response code: 204", DateTime.UtcNow, id);
+            return NoContent();
+        }
+        catch (KeyNotFoundException ex)
+        {
+            logger.LogWarning(ex, "{Time} - Блюдо или категория с Id {Id} не найдены для обновления - Response code: 404", DateTime.UtcNow, id);
+            return NotFound(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "{Time} - Ошибка при обновлении блюда с Id {Id} - Response code: 500", DateTime.UtcNow, id);
+            return StatusCode(500, new { message = "Внутренняя ошибка сервера" });
+        }
     }
 
     /// <summary>
@@ -67,7 +113,16 @@ public class DishesController(DishService dishService) : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id)
     {
-        await dishService.Delete(id);
-        return NoContent();
+        try
+        {
+            await dishService.Delete(id);
+            logger.LogInformation("{Time} - Удалено блюдо с Id {Id} - Response code: 204", DateTime.UtcNow, id);
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "{Time} - Ошибка при удалении блюда с Id {Id} - Response code: 500", DateTime.UtcNow, id);
+            return StatusCode(500, new { message = "Внутренняя ошибка сервера" });
+        }
     }
 }

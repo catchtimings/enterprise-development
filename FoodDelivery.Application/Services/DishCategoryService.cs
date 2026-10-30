@@ -22,7 +22,7 @@ public class DishCategoryService(IRepository<DishCategory> categoryRepository)
     /// <summary>
     /// Возвращает список всех категорий
     /// </summary>
-    public async Task<IEnumerable<DishCategoryDto>> GetAll()
+    public async Task<IList<DishCategoryDto>> GetAll()
     {
         var categories = await categoryRepository.GetAll();
         return DishCategoryMapper.Map(categories.ToList());

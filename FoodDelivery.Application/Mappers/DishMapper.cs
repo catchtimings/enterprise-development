@@ -11,7 +11,7 @@ public static class DishMapper
     public static DishDto Map(Dish entity)
         => new(entity.Id, entity.Name, entity.Weight, entity.Price, entity.CategoryId, entity.Category?.Name);
 
-    public static Dish Map(DishCreateDto dto) => new()
+    public static Dish Map(DishCreateUpdateDto dto) => new()
     {
         Id = 0,
         Name = dto.Name,

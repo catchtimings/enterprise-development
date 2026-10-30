@@ -15,7 +15,7 @@ public class DishService(
     /// <summary>
     /// Создает новое блюдо
     /// </summary>
-    public async Task<DishDto> Create(DishCreateDto dto)
+    public async Task<DishDto> Create(DishCreateUpdateDto dto)
     {
         var category = await categoryRepository.GetById(dto.CategoryId)
             ?? throw new KeyNotFoundException("Категория не найдена");
@@ -39,7 +39,7 @@ public class DishService(
     /// <summary>
     /// Возвращает список всех блюд
     /// </summary>
-    public async Task<IEnumerable<DishDto>> GetAll()
+    public async Task<IList<DishDto>> GetAll()
     {
         var dishes = await dishRepository.GetAll();
         return DishMapper.Map(dishes.ToList());
@@ -48,7 +48,7 @@ public class DishService(
     /// <summary>
     /// Обновляет данные блюда
     /// </summary>
-    public async Task<DishDto> Update(int id, DishCreateDto dto)
+    public async Task<DishDto> Update(int id, DishCreateUpdateDto dto)
     {
         var existing = await dishRepository.GetById(id)
             ?? throw new KeyNotFoundException("Блюдо не найдено");

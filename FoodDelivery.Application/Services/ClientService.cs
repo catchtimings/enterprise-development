@@ -13,7 +13,7 @@ public class ClientService(IRepository<Client> clientRepository)
     /// <summary>
     /// Создает нового клиента
     /// </summary>
-    public async Task<ClientDto> Create(ClientCreateDto dto)
+    public async Task<ClientDto> Create(ClientCreateUpdateDto dto)
     {
         var client = ClientMapper.Map(dto);
         await clientRepository.Add(client);
@@ -32,7 +32,7 @@ public class ClientService(IRepository<Client> clientRepository)
     /// <summary>
     /// Возвращает всех клиентов
     /// </summary>
-    public async Task<IEnumerable<ClientDto>> GetAll()
+    public async Task<IList<ClientDto>> GetAll()
     {
         var clients = await clientRepository.GetAll();
         return ClientMapper.Map(clients.ToList());
@@ -41,7 +41,7 @@ public class ClientService(IRepository<Client> clientRepository)
     /// <summary>
     /// Обновляет данные клиента
     /// </summary>
-    public async Task<ClientDto> Update(int id, ClientCreateDto dto)
+    public async Task<ClientDto> Update(int id, ClientCreateUpdateDto dto)
     {
         var existing = await clientRepository.GetById(id)
             ?? throw new KeyNotFoundException("Клиент не найден");

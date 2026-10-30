@@ -10,18 +10,30 @@ namespace FoodDelivery.Api.Controllers;
 /// </summary>
 /// <param name="clientService">Сервис клиентов</param>
 /// <param name="orderService">Сервис заказов</param>
+/// <param name="logger">Логгер</param>
 [ApiController]
 [Route("api/clients")]
-public class ClientsController(ClientService clientService, OrderService orderService) : ControllerBase
+public class ClientsController(ClientService clientService, OrderService orderService, ILogger<ClientsController> logger) : ControllerBase
 {
     /// <summary>
     /// Возвращает список всех клиентов
     /// </summary>
     /// <returns>Список клиентов</returns>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ClientDto>>> GetAll()
+    public async Task<ActionResult<IList<ClientDto>>> GetAll()
     {
-        return Ok(await clientService.GetAll());
+        try
+        {
+            logger.LogInformation("{Time} - Запрос на получение всех клиентов", DateTime.UtcNow);
+            var result = await clientService.GetAll();
+            logger.LogInformation("{Time} - Успешно получен список клиентов - Response code: 200", DateTime.UtcNow);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "{Time} - Ошибка при получении списка клиентов - Response code: 500", DateTime.UtcNow);
+            return StatusCode(500, new { message = "Внутренняя ошибка сервера" });
+        }
     }
 
     /// <summary>
@@ -33,7 +45,13 @@ public class ClientsController(ClientService clientService, OrderService orderSe
     public async Task<ActionResult<ClientDto>> GetById(int id)
     {
         var result = await clientService.Get(id);
-        return result is null ? NotFound() : Ok(result);
+        if (result is null)
+        {
+            logger.LogWarning("{Time} - Клиент с Id {Id} не найден - Response code: 404", DateTime.UtcNow, id);
+            return NotFound(new { message = "Клиент не найден" });
+        }
+        logger.LogInformation("{Time} - Клиент с Id {Id} успешно найден - Response code: 200", DateTime.UtcNow, id);
+        return Ok(result);
     }
 
     /// <summary>
@@ -42,10 +60,19 @@ public class ClientsController(ClientService clientService, OrderService orderSe
     /// <param name="dto">Данные о клиенте</param>
     /// <returns>Созданный клиент</returns>
     [HttpPost]
-    public async Task<ActionResult<ClientDto>> Create([FromBody] ClientCreateDto dto)
+    public async Task<ActionResult<ClientDto>> Create([FromBody] ClientCreateUpdateDto dto)
     {
-        var result = await clientService.Create(dto);
-        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+        try
+        {
+            var result = await clientService.Create(dto);
+            logger.LogInformation("{Time} - Создан новый клиент с Id {Id} - Response code: 201", DateTime.UtcNow, result.Id);
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "{Time} - Ошибка при создании клиента - Response code: 500", DateTime.UtcNow);
+            return StatusCode(500, new { message = "Внутренняя ошибка сервера" });
+        }
     }
 
     /// <summary>
@@ -53,12 +80,26 @@ public class ClientsController(ClientService clientService, OrderService orderSe
     /// </summary>
     /// <param name="id">Идентификатор клиента</param>
     /// <param name="dto">Новые данные о клиенте</param>
-    /// <returns>Статус 204 No Content</returns>
+    /// <returns>Статус 204 No Content или 404 Not Found</returns>
     [HttpPut("{id:int}")]
-    public async Task<ActionResult> Update(int id, [FromBody] ClientCreateDto dto)
+    public async Task<ActionResult> Update(int id, [FromBody] ClientCreateUpdateDto dto)
     {
-        await clientService.Update(id, dto);
-        return NoContent();
+        try
+        {
+            await clientService.Update(id, dto);
+            logger.LogInformation("{Time} - Обновлен клиент с Id {Id} - Response code: 204", DateTime.UtcNow, id);
+            return NoContent();
+        }
+        catch (KeyNotFoundException ex)
+        {
+            logger.LogWarning(ex, "{Time} - Клиент с Id {Id} не найден для обновления - Response code: 404", DateTime.UtcNow, id);
+            return NotFound(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "{Time} - Ошибка при обновлении клиента с Id {Id} - Response code: 500", DateTime.UtcNow, id);
+            return StatusCode(500, new { message = "Внутренняя ошибка сервера" });
+        }
     }
 
     /// <summary>
@@ -69,8 +110,17 @@ public class ClientsController(ClientService clientService, OrderService orderSe
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id)
     {
-        await clientService.Delete(id);
-        return NoContent();
+        try
+        {
+            await clientService.Delete(id);
+            logger.LogInformation("{Time} - Удален клиент с Id {Id} - Response code: 204", DateTime.UtcNow, id);
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "{Time} - Ошибка при удалении клиента с Id {Id} - Response code: 500", DateTime.UtcNow, id);
+            return StatusCode(500, new { message = "Внутренняя ошибка сервера" });
+        }
     }
 
     /// <summary>
@@ -79,13 +129,26 @@ public class ClientsController(ClientService clientService, OrderService orderSe
     /// <param name="id">Идентификатор клиента</param>
     /// <returns>Список заказов клиента</returns>
     [HttpGet("{id:int}/orders")]
-    public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrders(int id)
+    public async Task<ActionResult<IList<OrderDto>>> GetOrders(int id)
     {
         var client = await clientService.Get(id);
-        if (client is null) return NotFound();
+        if (client is null)
+        {
+            logger.LogWarning("{Time} - Клиент с Id {Id} не найден - Response code: 404", DateTime.UtcNow, id);
+            return NotFound(new { message = "Клиент не найден" });
+        }
 
-        var allOrders = await orderService.GetAll();
-        var clientOrders = allOrders.Where(o => o.ClientId == id);
-        return Ok(clientOrders);
+        try
+        {
+            var allOrders = await orderService.GetAll();
+            var clientOrders = allOrders.Where(o => o.ClientId == id);
+            logger.LogInformation("{Time} - Успешно получены заказы клиента с Id {Id} - Response code: 200", DateTime.UtcNow, id);
+            return Ok(clientOrders);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "{Time} - Ошибка при получении заказов клиента с Id {Id} - Response code: 500", DateTime.UtcNow, id);
+            return StatusCode(500, new { message = "Внутренняя ошибка сервера" });
+        }
     }
 }

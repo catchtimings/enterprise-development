@@ -11,7 +11,7 @@ public static class RestaurantMapper
     public static RestaurantDto Map(Restaurant entity)
         => new(entity.Id, entity.Name, entity.Address, entity.Rating, entity.OpeningTime, entity.ClosingTime);
 
-    public static Restaurant Map(RestaurantCreateDto dto) => new()
+    public static Restaurant Map(RestaurantCreateUpdateDto dto) => new()
     {
         Id = 0,
         Name = dto.Name,

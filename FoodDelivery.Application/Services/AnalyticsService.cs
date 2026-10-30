@@ -14,9 +14,9 @@ public class AnalyticsService(
     IRepository<Restaurant> restaurantRepository)
 {
     /// <summary>
-    /// Возвращает топ-5 ресторанов по количеству заказов
+    /// Проверяет получение пяти ресторанов с наибольшим количеством заказов
     /// </summary>
-    public async Task<IEnumerable<RestaurantWithOrderCountDto>> GetTop5Restaurants()
+    public async Task<IList<RestaurantWithOrderCountDto>> GetTop5RestaurantsByOrderCount()
     {
         var orders = await orderRepository.GetAll();
         var restaurants = await restaurantRepository.GetAll();
@@ -40,18 +40,22 @@ public class AnalyticsService(
     }
 
     /// <summary>
-    /// Возвращает заказы с минимальным временем доставки
+    /// Проверяет получение заказов с минимальным временем доставки
     /// </summary>
-    public async Task<MinDeliveryTimeOrdersDto> GetMinDeliveryTimeOrders()
+    public async Task<MinDeliveryTimeOrdersDto> GetOrdersWithMinDelivery()
     {
         var orders = await orderRepository.GetAll();
-        if (!orders.Any())
+
+        var deliveredOrders = orders.Where(o => o.DeliveryDuration.HasValue).ToList();
+
+        if (!deliveredOrders.Any())
         {
             return new MinDeliveryTimeOrdersDto(TimeSpan.Zero, []);
         }
 
-        var minDuration = orders.Min(o => o.DeliveryDuration);
-        var result = orders
+        var minDuration = deliveredOrders.Min(o => o.DeliveryDuration!.Value);
+
+        var result = deliveredOrders
             .Where(o => o.DeliveryDuration == minDuration)
             .Select(OrderMapper.Map)
             .ToList();
@@ -60,9 +64,9 @@ public class AnalyticsService(
     }
 
     /// <summary>
-    /// Возвращает клиентов указанного ресторана, отсортированных по ФИО
+    /// Проверяет получение клиентов выбранного ресторана, отсортированных по ФИО
     /// </summary>
-    public async Task<IEnumerable<ClientDto>> GetClientsByRestaurant(int restaurantId)
+    public async Task<IList<ClientDto>> GetClientsByRestaurant(int restaurantId)
     {
         var orders = await orderRepository.GetAll();
 
@@ -77,9 +81,9 @@ public class AnalyticsService(
     }
 
     /// <summary>
-    /// Возвращает сводную статистику по категориям блюд за указанный период
+    /// Проверяет получение агрегированной статистики по категориям за заданный период
     /// </summary>
-    public async Task<IEnumerable<CategorySummaryDto>> GetCategorySummary(DateTime startDate, DateTime endDate)
+    public async Task<IList<CategorySummaryDto>> GetCategoryOrderSummary(DateTime startDate, DateTime endDate)
     {
         var orders = await orderRepository.GetAll();
 
@@ -99,9 +103,9 @@ public class AnalyticsService(
     }
 
     /// <summary>
-    /// Возвращает клиентов с наибольшей суммой трат за всё время
+    /// Проверяет получение всех клиентов с максимальной общей суммой заказов
     /// </summary>
-    public async Task<IEnumerable<TopSpenderDto>> GetTopSpenders()
+    public async Task<IList<TopSpenderDto>> GetTopSpenderClients()
     {
         var orders = await orderRepository.GetAll();
 

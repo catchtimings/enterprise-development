@@ -8,18 +8,30 @@ namespace FoodDelivery.Api.Controllers;
 /// Контроллер справочника категорий блюд
 /// </summary>
 /// <param name="categoryService">Сервис категорий</param>
+/// <param name="logger">Логгер</param>
 [ApiController]
 [Route("api/dish-categories")]
-public class DishCategoriesController(DishCategoryService categoryService) : ControllerBase
+public class DishCategoriesController(DishCategoryService categoryService, ILogger<DishCategoriesController> logger) : ControllerBase
 {
     /// <summary>
     /// Возвращает список всех категорий
     /// </summary>
     /// <returns>Список категорий</returns>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<DishCategoryDto>>> GetAll()
+    public async Task<ActionResult<IList<DishCategoryDto>>> GetAll()
     {
-        return Ok(await categoryService.GetAll());
+        try
+        {
+            logger.LogInformation("{Time} - Запрос на получение всех категорий блюд", DateTime.UtcNow);
+            var result = await categoryService.GetAll();
+            logger.LogInformation("{Time} - Успешно получен список категорий блюд - Response code: 200", DateTime.UtcNow);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "{Time} - Ошибка при получении списка категорий блюд - Response code: 500", DateTime.UtcNow);
+            return StatusCode(500, new { message = "Внутренняя ошибка сервера" });
+        }
     }
 
     /// <summary>
@@ -31,6 +43,12 @@ public class DishCategoriesController(DishCategoryService categoryService) : Con
     public async Task<ActionResult<DishCategoryDto>> GetById(int id)
     {
         var result = await categoryService.Get(id);
-        return result is null ? NotFound() : Ok(result);
+        if (result is null)
+        {
+            logger.LogWarning("{Time} - Категория с Id {Id} не найдена - Response code: 404", DateTime.UtcNow, id);
+            return NotFound(new { message = "Категория не найдена" });
+        }
+        logger.LogInformation("{Time} - Категория с Id {Id} успешно найдена - Response code: 200", DateTime.UtcNow, id);
+        return Ok(result);
     }
 }

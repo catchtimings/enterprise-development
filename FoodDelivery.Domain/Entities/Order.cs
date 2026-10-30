@@ -38,7 +38,7 @@ public class Order
     /// <summary>
     /// Дата и время доставки
     /// </summary>
-    public DateTime DeliveredAt { get; set; }
+    public DateTime? DeliveredAt { get; set; }
 
     /// <summary>
     /// Итоговая сумма заказа
@@ -53,5 +53,5 @@ public class Order
     /// <summary>
     /// Время, затраченное на доставку
     /// </summary>
-    public TimeSpan DeliveryDuration => DeliveredAt - CreatedAt;
+    public TimeSpan? DeliveryDuration => DeliveredAt - CreatedAt;
 }

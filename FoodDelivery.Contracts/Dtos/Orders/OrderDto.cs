@@ -20,8 +20,8 @@ public record OrderDto(
     int RestaurantId,
     string? RestaurantName,
     DateTime CreatedAt,
-    DateTime DeliveredAt,
+    DateTime? DeliveredAt,
     decimal TotalAmount,
-    TimeSpan DeliveryDuration,
+    TimeSpan? DeliveryDuration,
     List<OrderItemDto> Items
 );

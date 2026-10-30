@@ -11,7 +11,7 @@ public static class ClientMapper
     public static ClientDto Map(Client entity)
         => new(entity.Id, entity.FullName, entity.PhoneNumber, entity.DeliveryAddress);
 
-    public static Client Map(ClientCreateDto dto) => new()
+    public static Client Map(ClientCreateUpdateDto dto) => new()
     {
         Id = 0,
         FullName = dto.FullName,

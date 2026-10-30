@@ -10,7 +10,7 @@ namespace FoodDelivery.Infrastructure.InMemory.Repositories;
 public class RestaurantRepository(DataSeeder seeder) : IRepository<Restaurant>
 {
     /// <inheritdoc />
-    public Task<IEnumerable<Restaurant>> GetAll() => Task.FromResult<IEnumerable<Restaurant>>(seeder.Restaurants);
+    public Task<IList<Restaurant>> GetAll() => Task.FromResult<IList<Restaurant>>(seeder.Restaurants);
 
     /// <inheritdoc />
     public Task<Restaurant?> GetById(int id) => Task.FromResult(seeder.Restaurants.FirstOrDefault(r => r.Id == id));

@@ -16,7 +16,7 @@ public interface IRepository<T> where T : class
     /// <summary>
     /// Возвращает все сущности
     /// </summary>
-    public Task<IEnumerable<T>> GetAll();
+    public Task<IList<T>> GetAll();
 
     /// <summary>
     /// Возвращает сущность по идентификатору

@@ -13,7 +13,7 @@ public class RestaurantService(IRepository<Restaurant> restaurantRepository)
     /// <summary>
     /// Создает новый ресторан
     /// </summary>
-    public async Task<RestaurantDto> Create(RestaurantCreateDto dto)
+    public async Task<RestaurantDto> Create(RestaurantCreateUpdateDto dto)
     {
         var restaurant = RestaurantMapper.Map(dto);
         await restaurantRepository.Add(restaurant);
@@ -32,7 +32,7 @@ public class RestaurantService(IRepository<Restaurant> restaurantRepository)
     /// <summary>
     /// Возвращает список всех ресторанов
     /// </summary>
-    public async Task<IEnumerable<RestaurantDto>> GetAll()
+    public async Task<IList<RestaurantDto>> GetAll()
     {
         var restaurants = await restaurantRepository.GetAll();
         return RestaurantMapper.Map(restaurants.ToList());
@@ -41,7 +41,7 @@ public class RestaurantService(IRepository<Restaurant> restaurantRepository)
     /// <summary>
     /// Обновляет данные ресторана
     /// </summary>
-    public async Task<RestaurantDto> Update(int id, RestaurantCreateDto dto)
+    public async Task<RestaurantDto> Update(int id, RestaurantCreateUpdateDto dto)
     {
         var existing = await restaurantRepository.GetById(id)
             ?? throw new KeyNotFoundException("Ресторан не найден");

@@ -17,12 +17,18 @@ public class OrderService(
     /// <summary>
     /// Создает новый заказ
     /// </summary>
-    public async Task<OrderDto> Create(OrderCreateDto dto)
+    public async Task<OrderDto> Create(OrderCreateUpdateDto dto)
     {
         var client = await clientRepository.GetById(dto.ClientId)
             ?? throw new KeyNotFoundException("Клиент не найден");
         var restaurant = await restaurantRepository.GetById(dto.RestaurantId)
             ?? throw new KeyNotFoundException("Ресторан не найден");
+
+        DateTime createdAtVar = DateTime.UtcNow;
+
+        if (dto.DeliveredAt.HasValue && dto.DeliveredAt.Value < createdAtVar)
+            throw new ArgumentException("Время доставки не может быть раньше времени создания заказа");
+
 
         var items = new List<OrderItem>();
         foreach (var itemDto in dto.Items)
@@ -43,7 +49,7 @@ public class OrderService(
             Client = client,
             RestaurantId = restaurant.Id,
             Restaurant = restaurant,
-            CreatedAt = DateTime.UtcNow,
+            CreatedAt = createdAtVar,
             DeliveredAt = dto.DeliveredAt,
             Items = items
         };
@@ -65,7 +71,7 @@ public class OrderService(
     /// <summary>
     /// Возвращает список всех заказов
     /// </summary>
-    public async Task<IEnumerable<OrderDto>> GetAll()
+    public async Task<IList<OrderDto>> GetAll()
     {
         var orders = await orderRepository.GetAll();
         return OrderMapper.Map(orders.ToList());
@@ -74,7 +80,7 @@ public class OrderService(
     /// <summary>
     /// Обновляет данные заказа
     /// </summary>
-    public async Task<OrderDto> Update(int id, OrderCreateDto dto)
+    public async Task<OrderDto> Update(int id, OrderCreateUpdateDto dto)
     {
         var existing = await orderRepository.GetById(id)
             ?? throw new KeyNotFoundException("Заказ не найден");
@@ -82,6 +88,12 @@ public class OrderService(
             ?? throw new KeyNotFoundException("Клиент не найден");
         var restaurant = await restaurantRepository.GetById(dto.RestaurantId)
             ?? throw new KeyNotFoundException("Ресторан не найден");
+
+        if (dto.DeliveredAt.HasValue && dto.DeliveredAt.Value < existing.CreatedAt)
+            throw new ArgumentException("Время доставки не может быть раньше времени создания заказа");
+
+        if(existing.DeliveredAt.HasValue && !dto.DeliveredAt.HasValue)
+            throw new ArgumentException("Нельзя обновить время доставки на null");
 
         var items = new List<OrderItem>();
         foreach (var itemDto in dto.Items)
@@ -116,11 +128,11 @@ public class OrderService(
     /// <summary>
     /// Возвращает позиции указанного заказа
     /// </summary>
-    public async Task<IEnumerable<OrderItemDto>> GetItems(int orderId)
+    public async Task<IList<OrderItemDto>> GetItems(int orderId)
     {
         var order = await orderRepository.GetById(orderId)
             ?? throw new KeyNotFoundException("Заказ не найден");
 
-        return order.Items.Select(OrderMapper.Map);
+        return order.Items.Select(OrderMapper.Map).ToList();
     }
 }

@@ -10,7 +10,7 @@ namespace FoodDelivery.Infrastructure.InMemory.Repositories;
 public class OrderRepository(DataSeeder seeder) : IRepository<Order>
 {
     /// <inheritdoc />
-    public Task<IEnumerable<Order>> GetAll() => Task.FromResult<IEnumerable<Order>>(seeder.Orders);
+    public Task<IList<Order>> GetAll() => Task.FromResult<IList<Order>>(seeder.Orders);
 
     /// <inheritdoc />
     public Task<Order?> GetById(int id) => Task.FromResult(seeder.Orders.FirstOrDefault(o => o.Id == id));
