@@ -14,7 +14,7 @@ public class AnalyticsService(
     IRepository<Restaurant> restaurantRepository)
 {
     /// <summary>
-    /// Проверяет получение пяти ресторанов с наибольшим количеством заказов
+    /// Возвращает пять ресторанов с наибольшим количеством заказов
     /// </summary>
     public async Task<IList<RestaurantWithOrderCountDto>> GetTop5RestaurantsByOrderCount()
     {
@@ -40,7 +40,7 @@ public class AnalyticsService(
     }
 
     /// <summary>
-    /// Проверяет получение заказов с минимальным временем доставки
+    /// Возвращает заказы с минимальным временем доставки
     /// </summary>
     public async Task<MinDeliveryTimeOrdersDto> GetOrdersWithMinDelivery()
     {
@@ -64,7 +64,7 @@ public class AnalyticsService(
     }
 
     /// <summary>
-    /// Проверяет получение клиентов выбранного ресторана, отсортированных по ФИО
+    /// Возвращает клиентов выбранного ресторана, отсортированных по ФИО
     /// </summary>
     public async Task<IList<ClientDto>> GetClientsByRestaurant(int restaurantId)
     {
@@ -81,7 +81,7 @@ public class AnalyticsService(
     }
 
     /// <summary>
-    /// Проверяет получение агрегированной статистики по категориям за заданный период
+    /// Возвращает агрегированную статистику по категориям за заданный период
     /// </summary>
     public async Task<IList<CategorySummaryDto>> GetCategoryOrderSummary(DateTime startDate, DateTime endDate)
     {
@@ -103,7 +103,7 @@ public class AnalyticsService(
     }
 
     /// <summary>
-    /// Проверяет получение всех клиентов с максимальной общей суммой заказов
+    /// Возвращает всех клиентов с максимальной общей суммой заказов
     /// </summary>
     public async Task<IList<TopSpenderDto>> GetTopSpenderClients()
     {
