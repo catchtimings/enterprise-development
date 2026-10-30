@@ -24,11 +24,6 @@ public interface IRepository<T> where T : class
     public Task<T?> GetById(int id);
 
     /// <summary>
-    /// Проверяет существование сущности
-    /// </summary>
-    public Task<bool> IsExists(int id);
-
-    /// <summary>
     /// Обновляет сущность
     /// </summary>
     public Task Update(T entity);

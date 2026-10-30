@@ -89,11 +89,13 @@ public class OrderService(
         var restaurant = await restaurantRepository.GetById(dto.RestaurantId)
             ?? throw new KeyNotFoundException("Ресторан не найден");
 
-        if (dto.DeliveredAt.HasValue && dto.DeliveredAt.Value < existing.CreatedAt)
-            throw new ArgumentException("Время доставки не может быть раньше времени создания заказа");
+        if (dto.DeliveredAt.HasValue)
+        {
+            if (dto.DeliveredAt.Value < existing.CreatedAt)
+                throw new ArgumentException("Время доставки не может быть раньше времени создания заказа");
 
-        if(existing.DeliveredAt.HasValue && !dto.DeliveredAt.HasValue)
-            throw new ArgumentException("Нельзя обновить время доставки на null");
+            existing.DeliveredAt = dto.DeliveredAt.Value;
+        }
 
         var items = new List<OrderItem>();
         foreach (var itemDto in dto.Items)
