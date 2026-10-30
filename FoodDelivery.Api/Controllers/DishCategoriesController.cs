@@ -51,4 +51,73 @@ public class DishCategoriesController(DishCategoryService categoryService, ILogg
         logger.LogInformation("{Time} - Категория с Id {Id} успешно найдена - Response code: 200", DateTime.UtcNow, id);
         return Ok(result);
     }
+
+    /// <summary>
+    /// Создает новую категорию
+    /// </summary>
+    /// <param name="dto">Данные о категории</param>
+    /// <returns>Созданная категория</returns>
+    [HttpPost]
+    public async Task<ActionResult<DishCategoryDto>> Create([FromBody] DishCategoryCreateUpdateDto dto)
+    {
+        try
+        {
+            var result = await categoryService.Create(dto);
+            logger.LogInformation("{Time} - Создана новая категория с Id {Id} - Response code: 201", DateTime.UtcNow, result.Id);
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "{Time} - Ошибка при создании категории - Response code: 500", DateTime.UtcNow);
+            return StatusCode(500, new { message = "Внутренняя ошибка сервера" });
+        }
+    }
+
+    /// <summary>
+    /// Обновляет данные категории по идентификатору
+    /// </summary>
+    /// <param name="id">Идентификатор категории</param>
+    /// <param name="dto">Новые данные о категории</param>
+    /// <returns>Статус 204 No Content или 404 Not Found</returns>
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult> Update(int id, [FromBody] DishCategoryCreateUpdateDto dto)
+    {
+        try
+        {
+            await categoryService.Update(id, dto);
+            logger.LogInformation("{Time} - Обновлена категория с Id {Id} - Response code: 204", DateTime.UtcNow, id);
+            return NoContent();
+        }
+        catch (KeyNotFoundException ex)
+        {
+            logger.LogWarning(ex, "{Time} - Категория с Id {Id} не найдена для обновления - Response code: 404", DateTime.UtcNow, id);
+            return NotFound(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "{Time} - Ошибка при обновлении категории с Id {Id} - Response code: 500", DateTime.UtcNow, id);
+            return StatusCode(500, new { message = "Внутренняя ошибка сервера" });
+        }
+    }
+
+    /// <summary>
+    /// Удаляет категорию по идентификатору
+    /// </summary>
+    /// <param name="id">Идентификатор категории</param>
+    /// <returns>Статус 204 No Content</returns>
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult> Delete(int id)
+    {
+        try
+        {
+            await categoryService.Delete(id);
+            logger.LogInformation("{Time} - Удалена категория с Id {Id} - Response code: 204", DateTime.UtcNow, id);
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "{Time} - Ошибка при удалении категории с Id {Id} - Response code: 500", DateTime.UtcNow, id);
+            return StatusCode(500, new { message = "Внутренняя ошибка сервера" });
+        }
+    }
 }

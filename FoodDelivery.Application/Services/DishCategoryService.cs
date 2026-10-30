@@ -11,6 +11,16 @@ namespace FoodDelivery.Application.Services;
 public class DishCategoryService(IRepository<DishCategory> categoryRepository)
 {
     /// <summary>
+    /// Создает новую категорию
+    /// </summary>
+    public async Task<DishCategoryDto> Create(DishCategoryCreateUpdateDto dto)
+    {
+        var category = DishCategoryMapper.Map(dto);
+        await categoryRepository.Add(category);
+        return DishCategoryMapper.Map(category);
+    }
+
+    /// <summary>
     /// Возвращает категорию по идентификатору
     /// </summary>
     public async Task<DishCategoryDto?> Get(int id)
@@ -27,4 +37,23 @@ public class DishCategoryService(IRepository<DishCategory> categoryRepository)
         var categories = await categoryRepository.GetAll();
         return DishCategoryMapper.Map(categories.ToList());
     }
+
+    /// <summary>
+    /// Обновляет данные категории
+    /// </summary>
+    public async Task<DishCategoryDto> Update(int id, DishCategoryCreateUpdateDto dto)
+    {
+        var existing = await categoryRepository.GetById(id)
+            ?? throw new KeyNotFoundException("Категория не найдена");
+
+        existing.Name = dto.Name;
+
+        await categoryRepository.Update(existing);
+        return DishCategoryMapper.Map(existing);
+    }
+
+    /// <summary>
+    /// Удаляет категорию
+    /// </summary>
+    public Task Delete(int id) => categoryRepository.Delete(id);
 }
