@@ -16,8 +16,8 @@ public class DishCategoryService(IRepository<DishCategory> categoryRepository)
     public async Task<DishCategoryDto> Create(DishCategoryCreateUpdateDto dto)
     {
         var category = DishCategoryMapper.Map(dto);
-        await categoryRepository.Add(category);
-        return DishCategoryMapper.Map(category);
+        var createdCategory = await categoryRepository.Add(category);
+        return DishCategoryMapper.Map(createdCategory);
     }
 
     /// <summary>
@@ -48,12 +48,12 @@ public class DishCategoryService(IRepository<DishCategory> categoryRepository)
 
         existing.Name = dto.Name;
 
-        await categoryRepository.Update(existing);
-        return DishCategoryMapper.Map(existing);
+        var updatedCategory = await categoryRepository.Update(existing);
+        return DishCategoryMapper.Map(updatedCategory);
     }
 
     /// <summary>
     /// Удаляет категорию
     /// </summary>
-    public Task Delete(int id) => categoryRepository.Delete(id);
+    public Task<bool> Delete(int id) => categoryRepository.Delete(id);
 }

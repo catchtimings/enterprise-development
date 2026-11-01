@@ -16,29 +16,28 @@ public class DishCategoryRepository(DataSeeder seeder) : IRepository<DishCategor
     public Task<DishCategory?> GetById(int id) => Task.FromResult(seeder.Categories.FirstOrDefault(c => c.Id == id));
 
     /// <inheritdoc />
-    public Task Add(DishCategory entity)
+    public Task<DishCategory> Add(DishCategory entity)
     {
         entity.Id = seeder.Categories.Any() ? seeder.Categories.Max(c => c.Id) + 1 : 1;
         seeder.Categories.Add(entity);
-        return Task.CompletedTask;
+        return Task.FromResult(entity);
     }
 
     /// <inheritdoc />
-    public Task Update(DishCategory entity)
+    public Task<DishCategory> Update(DishCategory entity)
     {
         var existing = seeder.Categories.FirstOrDefault(c => c.Id == entity.Id);
         if (existing != null) existing.Name = entity.Name;
-        return Task.CompletedTask;
+        return Task.FromResult(existing!);
     }
 
     /// <inheritdoc />
-    public Task Delete(int id)
+    public Task<bool> Delete(int id)
     {
         var existing = seeder.Categories.FirstOrDefault(c => c.Id == id);
-        if (existing != null) seeder.Categories.Remove(existing);
-        return Task.CompletedTask;
-    }
+        if (existing == null) return Task.FromResult(false);
 
-    /// <inheritdoc />
-    public Task<bool> IsExists(int id) => Task.FromResult(seeder.Categories.Any(c => c.Id == id));
+        seeder.Categories.Remove(existing);
+        return Task.FromResult(true);
+    }
 }

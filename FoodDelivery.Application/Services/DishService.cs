@@ -23,8 +23,8 @@ public class DishService(
         var dish = DishMapper.Map(dto);
         dish.Category = category;
 
-        await dishRepository.Add(dish);
-        return DishMapper.Map(dish);
+        var createdDish = await dishRepository.Add(dish);
+        return DishMapper.Map(createdDish);
     }
 
     /// <summary>
@@ -62,12 +62,12 @@ public class DishService(
         existing.CategoryId = dto.CategoryId;
         existing.Category = category;
 
-        await dishRepository.Update(existing);
-        return DishMapper.Map(existing);
+        var updatedDish = await dishRepository.Update(existing);
+        return DishMapper.Map(updatedDish);
     }
 
     /// <summary>
     /// Удаляет блюдо
     /// </summary>
-    public Task Delete(int id) => dishRepository.Delete(id);
+    public Task<bool> Delete(int id) => dishRepository.Delete(id);
 }

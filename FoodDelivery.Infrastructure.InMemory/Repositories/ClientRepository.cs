@@ -16,15 +16,15 @@ public class ClientRepository(DataSeeder seeder) : IRepository<Client>
     public Task<Client?> GetById(int id) => Task.FromResult(seeder.Clients.FirstOrDefault(c => c.Id == id));
 
     /// <inheritdoc />
-    public Task Add(Client entity)
+    public Task<Client> Add(Client entity)
     {
         entity.Id = seeder.Clients.Any() ? seeder.Clients.Max(c => c.Id) + 1 : 1;
         seeder.Clients.Add(entity);
-        return Task.CompletedTask;
+        return Task.FromResult(entity);
     }
 
     /// <inheritdoc />
-    public Task Update(Client entity)
+    public Task<Client> Update(Client entity)
     {
         var existing = seeder.Clients.FirstOrDefault(c => c.Id == entity.Id);
         if (existing != null)
@@ -33,17 +33,16 @@ public class ClientRepository(DataSeeder seeder) : IRepository<Client>
             existing.PhoneNumber = entity.PhoneNumber;
             existing.DeliveryAddress = entity.DeliveryAddress;
         }
-        return Task.CompletedTask;
+        return Task.FromResult(existing!);
     }
 
     /// <inheritdoc />
-    public Task Delete(int id)
+    public Task<bool> Delete(int id)
     {
         var existing = seeder.Clients.FirstOrDefault(c => c.Id == id);
-        if (existing != null) seeder.Clients.Remove(existing);
-        return Task.CompletedTask;
-    }
+        if (existing == null) return Task.FromResult(false);
 
-    /// <inheritdoc />
-    public Task<bool> IsExists(int id) => Task.FromResult(seeder.Clients.Any(c => c.Id == id));
+        seeder.Clients.Remove(existing);
+        return Task.FromResult(true);
+    }
 }

@@ -16,8 +16,8 @@ public class ClientService(IRepository<Client> clientRepository)
     public async Task<ClientDto> Create(ClientCreateUpdateDto dto)
     {
         var client = ClientMapper.Map(dto);
-        await clientRepository.Add(client);
-        return ClientMapper.Map(client);
+        var createdClient = await clientRepository.Add(client);
+        return ClientMapper.Map(createdClient);
     }
 
     /// <summary>
@@ -50,12 +50,12 @@ public class ClientService(IRepository<Client> clientRepository)
         existing.PhoneNumber = dto.PhoneNumber;
         existing.DeliveryAddress = dto.DeliveryAddress;
 
-        await clientRepository.Update(existing);
-        return ClientMapper.Map(existing);
+        var updatedClient = await clientRepository.Update(existing);
+        return ClientMapper.Map(updatedClient);
     }
 
     /// <summary>
     /// Удаляет клиента
     /// </summary>
-    public Task Delete(int id) => clientRepository.Delete(id);
+    public Task<bool> Delete(int id) => clientRepository.Delete(id);
 }

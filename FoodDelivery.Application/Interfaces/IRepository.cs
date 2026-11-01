@@ -3,28 +3,31 @@
 /// <summary>
 /// Базовый интерфейс репозитория для CRUD-операций
 /// </summary>
+/// <typeparam name="T">Тип сущности</typeparam>
 public interface IRepository<T> where T : class
 {
-    /// <summary>Добавляет сущность</summary>
-    public Task Add(T entity);
+    /// <summary>
+    /// Добавляет сущность и возвращает её
+    /// </summary>
+    Task<T> Add(T entity);
 
     /// <summary>
     /// Удаляет сущность по идентификатору
     /// </summary>
-    public Task Delete(int id);
+    Task<bool> Delete(int id);
 
     /// <summary>
     /// Возвращает все сущности
     /// </summary>
-    public Task<IList<T>> GetAll();
+    Task<IList<T>> GetAll();
 
     /// <summary>
     /// Возвращает сущность по идентификатору
     /// </summary>
-    public Task<T?> GetById(int id);
+    Task<T?> GetById(int id);
 
     /// <summary>
-    /// Обновляет сущность
+    /// Обновляет сущность и возвращает её
     /// </summary>
-    public Task Update(T entity);
+    Task<T> Update(T entity);
 }

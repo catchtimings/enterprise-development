@@ -16,8 +16,8 @@ public class RestaurantService(IRepository<Restaurant> restaurantRepository)
     public async Task<RestaurantDto> Create(RestaurantCreateUpdateDto dto)
     {
         var restaurant = RestaurantMapper.Map(dto);
-        await restaurantRepository.Add(restaurant);
-        return RestaurantMapper.Map(restaurant);
+        var createdRestaurant = await restaurantRepository.Add(restaurant);
+        return RestaurantMapper.Map(createdRestaurant);
     }
 
     /// <summary>
@@ -52,12 +52,12 @@ public class RestaurantService(IRepository<Restaurant> restaurantRepository)
         existing.OpeningTime = dto.OpeningTime;
         existing.ClosingTime = dto.ClosingTime;
 
-        await restaurantRepository.Update(existing);
-        return RestaurantMapper.Map(existing);
+        var updatedRestaurant = await restaurantRepository.Update(existing);
+        return RestaurantMapper.Map(updatedRestaurant);
     }
 
     /// <summary>
     /// Удаляет ресторан
     /// </summary>
-    public Task Delete(int id) => restaurantRepository.Delete(id);
+    public Task<bool> Delete(int id) => restaurantRepository.Delete(id);
 }

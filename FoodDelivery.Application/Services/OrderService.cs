@@ -55,8 +55,8 @@ public class OrderService(
         };
         order.TotalAmount = order.Items.Sum(i => i.Quantity * i.PriceAtOrder);
 
-        await orderRepository.Add(order);
-        return OrderMapper.Map(order);
+        var createdOrder = await orderRepository.Add(order);
+        return OrderMapper.Map(createdOrder);
     }
 
     /// <summary>
@@ -89,13 +89,11 @@ public class OrderService(
         var restaurant = await restaurantRepository.GetById(dto.RestaurantId)
             ?? throw new KeyNotFoundException("Ресторан не найден");
 
-        if (dto.DeliveredAt.HasValue)
-        {
-            if (dto.DeliveredAt.Value < existing.CreatedAt)
-                throw new ArgumentException("Время доставки не может быть раньше времени создания заказа");
+        if (dto.DeliveredAt.HasValue && dto.DeliveredAt.Value < existing.CreatedAt)
+            throw new ArgumentException("Время доставки не может быть раньше времени создания заказа");
 
-            existing.DeliveredAt = dto.DeliveredAt.Value;
-        }
+        if (existing.DeliveredAt.HasValue && !dto.DeliveredAt.HasValue)
+            throw new ArgumentException("Нельзя обновить время доставки на null");
 
         var items = new List<OrderItem>();
         foreach (var itemDto in dto.Items)
@@ -118,8 +116,8 @@ public class OrderService(
         existing.Items = items;
         existing.TotalAmount = existing.Items.Sum(i => i.Quantity * i.PriceAtOrder);
 
-        await orderRepository.Update(existing);
-        return OrderMapper.Map(existing);
+        var updatedOrder = await orderRepository.Update(existing);
+        return OrderMapper.Map(updatedOrder);
     }
 
     /// <summary>

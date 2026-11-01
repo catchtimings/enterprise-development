@@ -16,15 +16,15 @@ public class RestaurantRepository(DataSeeder seeder) : IRepository<Restaurant>
     public Task<Restaurant?> GetById(int id) => Task.FromResult(seeder.Restaurants.FirstOrDefault(r => r.Id == id));
 
     /// <inheritdoc />
-    public Task Add(Restaurant entity)
+    public Task<Restaurant> Add(Restaurant entity)
     {
         entity.Id = seeder.Restaurants.Any() ? seeder.Restaurants.Max(r => r.Id) + 1 : 1;
         seeder.Restaurants.Add(entity);
-        return Task.CompletedTask;
+        return Task.FromResult(entity);
     }
 
     /// <inheritdoc />
-    public Task Update(Restaurant entity)
+    public Task<Restaurant> Update(Restaurant entity)
     {
         var existing = seeder.Restaurants.FirstOrDefault(r => r.Id == entity.Id);
         if (existing != null)
@@ -35,17 +35,16 @@ public class RestaurantRepository(DataSeeder seeder) : IRepository<Restaurant>
             existing.OpeningTime = entity.OpeningTime;
             existing.ClosingTime = entity.ClosingTime;
         }
-        return Task.CompletedTask;
+        return Task.FromResult(existing!);
     }
 
     /// <inheritdoc />
-    public Task Delete(int id)
+    public Task<bool> Delete(int id)
     {
         var existing = seeder.Restaurants.FirstOrDefault(r => r.Id == id);
-        if (existing != null) seeder.Restaurants.Remove(existing);
-        return Task.CompletedTask;
-    }
+        if (existing == null) return Task.FromResult(false);
 
-    /// <inheritdoc />
-    public Task<bool> IsExists(int id) => Task.FromResult(seeder.Restaurants.Any(r => r.Id == id));
+        seeder.Restaurants.Remove(existing);
+        return Task.FromResult(true);
+    }
 }

@@ -16,7 +16,7 @@ public class OrderRepository(DataSeeder seeder) : IRepository<Order>
     public Task<Order?> GetById(int id) => Task.FromResult(seeder.Orders.FirstOrDefault(o => o.Id == id));
 
     /// <inheritdoc />
-    public Task Add(Order entity)
+    public Task<Order> Add(Order entity)
     {
         entity.Id = seeder.Orders.Any() ? seeder.Orders.Max(o => o.Id) + 1 : 1;
 
@@ -31,11 +31,11 @@ public class OrderRepository(DataSeeder seeder) : IRepository<Order>
         }
 
         seeder.Orders.Add(entity);
-        return Task.CompletedTask;
+        return Task.FromResult(entity);
     }
 
     /// <inheritdoc />
-    public Task Update(Order entity)
+    public Task<Order> Update(Order entity)
     {
         var existing = seeder.Orders.FirstOrDefault(o => o.Id == entity.Id);
         if (existing != null)
@@ -48,17 +48,16 @@ public class OrderRepository(DataSeeder seeder) : IRepository<Order>
             existing.DeliveredAt = entity.DeliveredAt;
             existing.Items = entity.Items;
         }
-        return Task.CompletedTask;
+        return Task.FromResult(existing!);
     }
 
     /// <inheritdoc />
-    public Task Delete(int id)
+    public Task<bool> Delete(int id)
     {
         var existing = seeder.Orders.FirstOrDefault(o => o.Id == id);
-        if (existing != null) seeder.Orders.Remove(existing);
-        return Task.CompletedTask;
-    }
+        if (existing == null) return Task.FromResult(false);
 
-    /// <inheritdoc />
-    public Task<bool> IsExists(int id) => Task.FromResult(seeder.Orders.Any(o => o.Id == id));
+        seeder.Orders.Remove(existing);
+        return Task.FromResult(true);
+    }
 }
