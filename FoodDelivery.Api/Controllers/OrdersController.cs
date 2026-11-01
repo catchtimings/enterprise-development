@@ -18,6 +18,8 @@ public class OrdersController(OrderService orderService, ILogger<OrdersControlle
     /// </summary>
     /// <returns>Список заказов</returns>
     [HttpGet]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult<IList<OrderDto>>> GetAll()
     {
         try
@@ -40,6 +42,9 @@ public class OrdersController(OrderService orderService, ILogger<OrdersControlle
     /// <param name="id">Идентификатор заказа</param>
     /// <returns>Данные заказа или 404 Not Found</returns>
     [HttpGet("{id:int}")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult<OrderDto>> GetById(int id)
     {
         var result = await orderService.Get(id);
@@ -58,6 +63,10 @@ public class OrdersController(OrderService orderService, ILogger<OrdersControlle
     /// <param name="dto">Данные о заказе</param>
     /// <returns>Созданный заказ</returns>
     [HttpPost]
+    [ProducesResponseType(201)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult<OrderDto>> Create([FromBody] OrderCreateUpdateDto dto)
     {
         try
@@ -90,6 +99,10 @@ public class OrdersController(OrderService orderService, ILogger<OrdersControlle
     /// <param name="dto">Новые данные о заказе</param>
     /// <returns>Статус 204 No Content или 404 Not Found</returns>
     [HttpPut("{id:int}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult> Update(int id, [FromBody] OrderCreateUpdateDto dto)
     {
         try
@@ -121,6 +134,8 @@ public class OrdersController(OrderService orderService, ILogger<OrdersControlle
     /// <param name="id">Идентификатор заказа</param>
     /// <returns>Статус 204 No Content</returns>
     [HttpDelete("{id:int}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult> Delete(int id)
     {
         try
@@ -142,6 +157,9 @@ public class OrdersController(OrderService orderService, ILogger<OrdersControlle
     /// <param name="id">Идентификатор заказа</param>
     /// <returns>Список позиций заказа</returns>
     [HttpGet("{id:int}/items")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult<IList<OrderItemDto>>> GetItems(int id)
     {
         try

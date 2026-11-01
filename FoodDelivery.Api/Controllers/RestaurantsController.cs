@@ -18,6 +18,8 @@ public class RestaurantsController(RestaurantService restaurantService, ILogger<
     /// </summary>
     /// <returns>Список ресторанов</returns>
     [HttpGet]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult<IList<RestaurantDto>>> GetAll()
     {
         try
@@ -40,6 +42,9 @@ public class RestaurantsController(RestaurantService restaurantService, ILogger<
     /// <param name="id">Идентификатор ресторана</param>
     /// <returns>Данные ресторана или 404 Not Found</returns>
     [HttpGet("{id:int}")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult<RestaurantDto>> GetById(int id)
     {
         var result = await restaurantService.Get(id);
@@ -58,6 +63,9 @@ public class RestaurantsController(RestaurantService restaurantService, ILogger<
     /// <param name="dto">Данные о ресторане</param>
     /// <returns>Созданный ресторан</returns>
     [HttpPost]
+    [ProducesResponseType(201)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult<RestaurantDto>> Create([FromBody] RestaurantCreateUpdateDto dto)
     {
         try
@@ -80,6 +88,10 @@ public class RestaurantsController(RestaurantService restaurantService, ILogger<
     /// <param name="dto">Новые данные о ресторане</param>
     /// <returns>Статус 204 No Content или 404 Not Found</returns>
     [HttpPut("{id:int}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult> Update(int id, [FromBody] RestaurantCreateUpdateDto dto)
     {
         try
@@ -106,6 +118,8 @@ public class RestaurantsController(RestaurantService restaurantService, ILogger<
     /// <param name="id">Идентификатор ресторана</param>
     /// <returns>Статус 204 No Content</returns>
     [HttpDelete("{id:int}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult> Delete(int id)
     {
         try

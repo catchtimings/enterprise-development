@@ -18,6 +18,8 @@ public class DishesController(DishService dishService, ILogger<DishesController>
     /// </summary>
     /// <returns>Список блюд</returns>
     [HttpGet]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult<IList<DishDto>>> GetAll()
     {
         try
@@ -40,6 +42,9 @@ public class DishesController(DishService dishService, ILogger<DishesController>
     /// <param name="id">Идентификатор блюда</param>
     /// <returns>Данные блюда или 404 Not Found</returns>
     [HttpGet("{id:int}")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult<DishDto>> GetById(int id)
     {
         var result = await dishService.Get(id);
@@ -58,6 +63,10 @@ public class DishesController(DishService dishService, ILogger<DishesController>
     /// <param name="dto">Данные о блюде</param>
     /// <returns>Созданное блюдо</returns>
     [HttpPost]
+    [ProducesResponseType(201)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult<DishDto>> Create([FromBody] DishCreateUpdateDto dto)
     {
         try
@@ -85,6 +94,10 @@ public class DishesController(DishService dishService, ILogger<DishesController>
     /// <param name="dto">Новые данные о блюде</param>
     /// <returns>Статус 204 No Content или 404 Not Found</returns>
     [HttpPut("{id:int}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult> Update(int id, [FromBody] DishCreateUpdateDto dto)
     {
         try
@@ -111,6 +124,8 @@ public class DishesController(DishService dishService, ILogger<DishesController>
     /// <param name="id">Идентификатор блюда</param>
     /// <returns>Статус 204 No Content</returns>
     [HttpDelete("{id:int}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult> Delete(int id)
     {
         try

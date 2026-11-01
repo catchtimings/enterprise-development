@@ -20,6 +20,8 @@ public class ClientsController(ClientService clientService, OrderService orderSe
     /// </summary>
     /// <returns>Список клиентов</returns>
     [HttpGet]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult<IList<ClientDto>>> GetAll()
     {
         try
@@ -42,6 +44,9 @@ public class ClientsController(ClientService clientService, OrderService orderSe
     /// <param name="id">Идентификатор клиента</param>
     /// <returns>Данные клиента или 404 Not Found</returns>
     [HttpGet("{id:int}")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult<ClientDto>> GetById(int id)
     {
         var result = await clientService.Get(id);
@@ -60,6 +65,9 @@ public class ClientsController(ClientService clientService, OrderService orderSe
     /// <param name="dto">Данные о клиенте</param>
     /// <returns>Созданный клиент</returns>
     [HttpPost]
+    [ProducesResponseType(201)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult<ClientDto>> Create([FromBody] ClientCreateUpdateDto dto)
     {
         try
@@ -82,6 +90,10 @@ public class ClientsController(ClientService clientService, OrderService orderSe
     /// <param name="dto">Новые данные о клиенте</param>
     /// <returns>Статус 204 No Content или 404 Not Found</returns>
     [HttpPut("{id:int}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult> Update(int id, [FromBody] ClientCreateUpdateDto dto)
     {
         try
@@ -108,6 +120,8 @@ public class ClientsController(ClientService clientService, OrderService orderSe
     /// <param name="id">Идентификатор клиента</param>
     /// <returns>Статус 204 No Content</returns>
     [HttpDelete("{id:int}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult> Delete(int id)
     {
         try
@@ -129,6 +143,9 @@ public class ClientsController(ClientService clientService, OrderService orderSe
     /// <param name="id">Идентификатор клиента</param>
     /// <returns>Список заказов клиента</returns>
     [HttpGet("{id:int}/orders")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult<IList<OrderDto>>> GetOrders(int id)
     {
         var client = await clientService.Get(id);
@@ -141,7 +158,7 @@ public class ClientsController(ClientService clientService, OrderService orderSe
         try
         {
             var allOrders = await orderService.GetAll();
-            var clientOrders = allOrders.Where(o => o.ClientId == id);
+            var clientOrders = allOrders.Where(o => o.ClientId == id).ToList();
             logger.LogInformation("{Time} - Успешно получены заказы клиента с Id {Id} - Response code: 200", DateTime.UtcNow, id);
             return Ok(clientOrders);
         }

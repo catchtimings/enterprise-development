@@ -18,6 +18,8 @@ public class DishCategoriesController(DishCategoryService categoryService, ILogg
     /// </summary>
     /// <returns>Список категорий</returns>
     [HttpGet]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult<IList<DishCategoryDto>>> GetAll()
     {
         try
@@ -40,6 +42,9 @@ public class DishCategoriesController(DishCategoryService categoryService, ILogg
     /// <param name="id">Идентификатор категории</param>
     /// <returns>Данные категории или 404 Not Found</returns>
     [HttpGet("{id:int}")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult<DishCategoryDto>> GetById(int id)
     {
         var result = await categoryService.Get(id);
@@ -58,6 +63,9 @@ public class DishCategoriesController(DishCategoryService categoryService, ILogg
     /// <param name="dto">Данные о категории</param>
     /// <returns>Созданная категория</returns>
     [HttpPost]
+    [ProducesResponseType(201)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult<DishCategoryDto>> Create([FromBody] DishCategoryCreateUpdateDto dto)
     {
         try
@@ -80,6 +88,10 @@ public class DishCategoriesController(DishCategoryService categoryService, ILogg
     /// <param name="dto">Новые данные о категории</param>
     /// <returns>Статус 204 No Content или 404 Not Found</returns>
     [HttpPut("{id:int}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult> Update(int id, [FromBody] DishCategoryCreateUpdateDto dto)
     {
         try
@@ -106,6 +118,8 @@ public class DishCategoriesController(DishCategoryService categoryService, ILogg
     /// <param name="id">Идентификатор категории</param>
     /// <returns>Статус 204 No Content</returns>
     [HttpDelete("{id:int}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult> Delete(int id)
     {
         try
