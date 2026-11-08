@@ -1,4 +1,5 @@
 ﻿using FoodDelivery.Domain;
+using FoodDelivery.Domain.Entities;
 
 namespace FoodDelivery.Tests;
 
@@ -7,5 +8,13 @@ namespace FoodDelivery.Tests;
 /// </summary>
 public class DatabaseFixture
 {
-    public DataSeeder Seeder { get; } = new();
+    public IReadOnlyList<Client> Clients { get; } = DataSeeder.Clients;
+
+    public IReadOnlyList<Dish> Dishes { get; } = DataSeeder.Dishes;
+
+    public IReadOnlyList<DishCategory> Categories { get; } = DataSeeder.Categories;
+
+    public IReadOnlyList<Order> Orders { get; } = DataSeeder.Orders;
+
+    public IReadOnlyList<Restaurant> Restaurants { get; } = DataSeeder.Restaurants;
 }

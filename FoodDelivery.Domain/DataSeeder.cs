@@ -5,38 +5,32 @@ namespace FoodDelivery.Domain;
 /// <summary>
 /// Генератор тестового датасета
 /// </summary>
-public class DataSeeder
+public static class DataSeeder
 {
     /// <summary>
     /// Список категорий
     /// </summary>
-    public List<DishCategory> Categories { get; } = GetCategories();
+    public static List<DishCategory> Categories { get; } = GetCategories();
 
     /// <summary>
     /// Список ресторанов
     /// </summary>
-    public List<Restaurant> Restaurants { get; } = GetRestaurants();
+    public static List<Restaurant> Restaurants { get; } = GetRestaurants();
 
     /// <summary>
     /// Список клиентов
     /// </summary>
-    public List<Client> Clients { get; } = GetClients();
+    public static List<Client> Clients { get; } = GetClients();
 
     /// <summary>
     /// Список блюд
     /// </summary>
-    public List<Dish> Dishes { get; }
+    public static List<Dish> Dishes { get; } = GetDishes(Categories);
 
     /// <summary>
     /// Список заказов
     /// </summary>
-    public List<Order> Orders { get; }
-
-    public DataSeeder()
-    {
-        Dishes = GetDishes(Categories);
-        Orders = GetOrders(Dishes, Clients, Restaurants);
-    }
+    public static List<Order> Orders { get; } = GetOrders(Dishes, Clients, Restaurants);
 
     /// <summary>
     /// Создаёт список категорий блюд

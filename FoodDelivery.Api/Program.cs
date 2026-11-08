@@ -11,8 +11,6 @@ Console.OutputEncoding = System.Text.Encoding.UTF8;
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
-builder.Services.AddSingleton<DataSeeder>();
-
 builder.Services.AddSingleton<IClientRepository, ClientRepository>();
 builder.Services.AddSingleton<IRestaurantRepository, RestaurantRepository>();
 builder.Services.AddSingleton<IDishRepository, DishRepository>();

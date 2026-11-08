@@ -4,8 +4,6 @@ namespace FoodDelivery.Tests;
 
 public class AnalyticsTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixture>
 {
-    private readonly DataSeeder _seeder = fixture.Seeder;
-
     /// <summary>
     /// Проверяет получение пяти ресторанов с наибольшим количеством заказов
     /// </summary>
@@ -17,7 +15,7 @@ public class AnalyticsTests(DatabaseFixture fixture) : IClassFixture<DatabaseFix
         var expectedRestaurantIds = new[] { 10, 1, 2, 3, 4 };
 
         // Act
-        var result = _seeder.Orders
+        var result = fixture.Orders
             .GroupBy(o => o.RestaurantId)
             .OrderByDescending(g => g.Count())
             .ThenBy(g => g.Key)
@@ -40,10 +38,10 @@ public class AnalyticsTests(DatabaseFixture fixture) : IClassFixture<DatabaseFix
         var expectedOrderIds = new[] { 1, 2 };
 
         // Act
-        var minDeliveryDuration = _seeder.Orders
+        var minDeliveryDuration = fixture.Orders
             .Min(o => o.DeliveryDuration);
 
-        var result = _seeder.Orders
+        var result = fixture.Orders
             .Where(o => o.DeliveryDuration == minDeliveryDuration)
             .Select(o => o.Id)
             .ToArray();
@@ -65,7 +63,7 @@ public class AnalyticsTests(DatabaseFixture fixture) : IClassFixture<DatabaseFix
         var expectedFullNames = new[] { "Сидоров Сидор Сидорович", "Смирнов Станислав Сергеевич" };
 
         // Act
-        var result = _seeder.Orders
+        var result = fixture.Orders
             .Where(o =>
                 o.RestaurantId == selectedRestaurantId &&
                 o.Client != null)
@@ -100,7 +98,7 @@ public class AnalyticsTests(DatabaseFixture fixture) : IClassFixture<DatabaseFix
         var endDate = new DateTime(2026, 9, 12, 23, 59, 59);
 
         // Act
-        var result = _seeder.Orders
+        var result = fixture.Orders
             .Where(o =>
                 o.CreatedAt >= startDate &&
                 o.CreatedAt <= endDate)
@@ -150,7 +148,7 @@ public class AnalyticsTests(DatabaseFixture fixture) : IClassFixture<DatabaseFix
         const decimal expectedTotalSpent = 10500m;
 
         // Act
-        var clientSpending = _seeder.Orders
+        var clientSpending = fixture.Orders
             .Where(o => o.Client != null)
             .GroupBy(o => o.Client!)
             .Select(g => new

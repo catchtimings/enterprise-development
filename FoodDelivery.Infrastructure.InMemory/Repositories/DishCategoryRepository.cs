@@ -7,26 +7,26 @@ namespace FoodDelivery.Infrastructure.InMemory.Repositories;
 /// <summary>
 /// Репозиторий категорий блюд в памяти
 /// </summary>
-public class DishCategoryRepository(DataSeeder seeder) : IDishCategoryRepository
+public class DishCategoryRepository : IDishCategoryRepository
 {
     /// <inheritdoc />
-    public Task<IList<DishCategory>> GetAll() => Task.FromResult<IList<DishCategory>>(seeder.Categories);
+    public Task<IList<DishCategory>> GetAll() => Task.FromResult<IList<DishCategory>>(DataSeeder.Categories);
 
     /// <inheritdoc />
-    public Task<DishCategory?> GetById(int id) => Task.FromResult(seeder.Categories.FirstOrDefault(c => c.Id == id));
+    public Task<DishCategory?> GetById(int id) => Task.FromResult(DataSeeder.Categories.FirstOrDefault(c => c.Id == id));
 
     /// <inheritdoc />
     public Task<DishCategory> Add(DishCategory entity)
     {
-        entity.Id = seeder.Categories.Any() ? seeder.Categories.Max(c => c.Id) + 1 : 1;
-        seeder.Categories.Add(entity);
+        entity.Id = DataSeeder.Categories.Any() ? DataSeeder.Categories.Max(c => c.Id) + 1 : 1;
+        DataSeeder.Categories.Add(entity);
         return Task.FromResult(entity);
     }
 
     /// <inheritdoc />
     public Task<DishCategory> Update(DishCategory entity)
     {
-        var existing = seeder.Categories.FirstOrDefault(c => c.Id == entity.Id);
+        var existing = DataSeeder.Categories.FirstOrDefault(c => c.Id == entity.Id);
         if (existing != null) existing.Name = entity.Name;
         return Task.FromResult(existing!);
     }
@@ -34,10 +34,10 @@ public class DishCategoryRepository(DataSeeder seeder) : IDishCategoryRepository
     /// <inheritdoc />
     public Task<bool> Delete(int id)
     {
-        var existing = seeder.Categories.FirstOrDefault(c => c.Id == id);
+        var existing = DataSeeder.Categories.FirstOrDefault(c => c.Id == id);
         if (existing == null) return Task.FromResult(false);
 
-        seeder.Categories.Remove(existing);
+        DataSeeder.Categories.Remove(existing);
         return Task.FromResult(true);
     }
 }
