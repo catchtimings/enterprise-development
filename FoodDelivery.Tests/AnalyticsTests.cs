@@ -1,6 +1,4 @@
-﻿using FoodDelivery.Domain;
-
-namespace FoodDelivery.Tests;
+﻿namespace FoodDelivery.Tests;
 
 public class AnalyticsTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixture>
 {

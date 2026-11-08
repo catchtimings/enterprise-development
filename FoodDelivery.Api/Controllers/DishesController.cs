@@ -1,5 +1,4 @@
-﻿using FoodDelivery.Application.Services;
-using FoodDelivery.Application.Interfaces.Services;
+﻿using FoodDelivery.Application.Interfaces.Services;
 using FoodDelivery.Contracts.Dtos.Dishes;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,5 +1,4 @@
-﻿using FoodDelivery.Application.Services;
-using FoodDelivery.Application.Interfaces.Services;
+﻿using FoodDelivery.Application.Interfaces.Services;
 using FoodDelivery.Contracts.Dtos.Clients;
 using FoodDelivery.Contracts.Dtos.Orders;
 using Microsoft.AspNetCore.Mvc;
@@ -15,8 +14,8 @@ namespace FoodDelivery.Api.Controllers;
 [ApiController]
 [Route("api/clients")]
 public class ClientsController(
-    IClientService clientService, 
-    IOrderService orderService, 
+    IClientService clientService,
+    IOrderService orderService,
     ILogger<ClientsController> logger) : ControllerBase
 {
     /// <summary>
