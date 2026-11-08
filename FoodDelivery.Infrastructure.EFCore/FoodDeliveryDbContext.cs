@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FoodDelivery.Domain;
 using FoodDelivery.Domain.Entities;
-using FoodDelivery.Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace FoodDelivery.Infrastructure.EFCore;
 
@@ -8,7 +8,7 @@ namespace FoodDelivery.Infrastructure.EFCore;
 /// Контекст базы данных
 /// </summary>
 /// <param name="options">Опции контекста базы данных</param>
-public class FoodDeliveryDbContext(DbContextOptions options) : DbContext(options)
+public class FoodDeliveryDbContext(DbContextOptions<FoodDeliveryDbContext> options) : DbContext(options)
 {
     /// <summary>
     /// Коллекция клиентов в базе данных
@@ -24,6 +24,11 @@ public class FoodDeliveryDbContext(DbContextOptions options) : DbContext(options
     /// Коллекция категорий блюд в базе данных
     /// </summary>
     public DbSet<DishCategory> DishCategories { get; set; }
+
+    /// <summary>
+    /// Коллекция позиций заказов в базе данных
+    /// </summary>
+    public DbSet<OrderItem> OrderItems { get; set; }
 
     /// <summary>
     /// Коллекция заказов в базе данных
@@ -53,7 +58,13 @@ public class FoodDeliveryDbContext(DbContextOptions options) : DbContext(options
             entity.Property(c => c.PhoneNumber).HasMaxLength(30).IsRequired();
             entity.Property(c => c.DeliveryAddress).HasMaxLength(300).IsRequired();
 
-            entity.HasData(DataSeeder.Clients);
+            entity.HasData(DataSeeder.Clients.Select(c => new
+            {
+                c.Id,
+                c.FullName,
+                c.PhoneNumber,
+                c.DeliveryAddress
+            }));
         });
 
         // Конфигурация сущности Dish в базе данных
@@ -69,7 +80,14 @@ public class FoodDeliveryDbContext(DbContextOptions options) : DbContext(options
                 .HasForeignKey(d => d.CategoryId)
                 .IsRequired();
 
-            entity.HasData(DataSeeder.Dishes);
+            entity.HasData(DataSeeder.Dishes.Select(d => new
+            {
+                d.Id,
+                d.Name,
+                d.Weight,
+                d.Price,
+                d.CategoryId
+            }));
         });
 
         // Конфигурация сущности DishCategory в базе данных
@@ -80,7 +98,11 @@ public class FoodDeliveryDbContext(DbContextOptions options) : DbContext(options
             entity.Property(dc => dc.Id).IsRequired();
             entity.Property(dc => dc.Name).HasMaxLength(100).IsRequired();
 
-            entity.HasData(DataSeeder.Categories);
+            entity.HasData(DataSeeder.Categories.Select(c => new
+            {
+                c.Id,
+                c.Name
+            }));
         });
 
         // Конфигурация сущности Order в базе данных
@@ -104,7 +126,15 @@ public class FoodDeliveryDbContext(DbContextOptions options) : DbContext(options
                 .HasForeignKey(o => o.RestaurantId)
                 .IsRequired();
 
-            entity.HasData(DataSeeder.Orders);
+            entity.HasData(DataSeeder.Orders.Select(o => new
+            {
+                o.Id,
+                o.ClientId,
+                o.RestaurantId,
+                o.CreatedAt,
+                o.DeliveredAt,
+                o.TotalAmount
+            }));
         });
 
         // Конфигурация сущности Restaurant в базе данных
@@ -116,7 +146,41 @@ public class FoodDeliveryDbContext(DbContextOptions options) : DbContext(options
             entity.Property(r => r.Name).HasMaxLength(200).IsRequired();
             entity.Property(r => r.Address).HasMaxLength(300).IsRequired();
 
-            entity.HasData(DataSeeder.Restaurants);
+            entity.HasData(DataSeeder.Restaurants.Select(r => new
+            {
+                r.Id,
+                r.Name,
+                r.Address,
+                r.Rating,
+                r.OpeningTime,
+                r.ClosingTime
+            }));
+        });
+
+        modelBuilder.Entity<OrderItem>(entity =>
+        {
+            entity.HasKey(i => i.Id);
+            entity.Property(i => i.Id).IsRequired();
+            entity.Property(i => i.OrderId).IsRequired();
+            entity.Property(i => i.DishId).IsRequired();
+            entity.Property(i => i.Quantity).IsRequired();
+            entity.Property(i => i.PriceAtOrder).HasPrecision(18, 2).IsRequired();
+
+            entity.HasOne<Dish>()
+                .WithMany()
+                .HasForeignKey(i => i.DishId)
+                .IsRequired();
+
+            entity.HasData(DataSeeder.Orders
+                .SelectMany(o => o.Items)
+                .Select(i => new
+                {
+                    i.Id,
+                    i.OrderId,
+                    i.DishId,
+                    i.Quantity,
+                    i.PriceAtOrder
+                }));
         });
     }
 }
