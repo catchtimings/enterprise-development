@@ -1,4 +1,5 @@
 ﻿using FoodDelivery.Application.Services;
+using FoodDelivery.Application.Interfaces.Services;
 using FoodDelivery.Contracts.Dtos.Analytics;
 using FoodDelivery.Contracts.Dtos.Clients;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,7 @@ namespace FoodDelivery.Api.Controllers;
 /// <param name="logger">Логгер</param>
 [ApiController]
 [Route("api/analytics")]
-public class AnalyticsController(AnalyticsService analyticsService, ILogger<AnalyticsController> logger) : ControllerBase
+public class AnalyticsController(IAnalyticsService analyticsService, ILogger<AnalyticsController> logger) : ControllerBase
 {
     /// <summary>
     /// Возвращает топ-5 ресторанов по количеству заказов

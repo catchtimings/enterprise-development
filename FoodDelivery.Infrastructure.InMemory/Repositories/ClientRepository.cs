@@ -1,4 +1,4 @@
-﻿using FoodDelivery.Application.Interfaces;
+﻿using FoodDelivery.Application.Interfaces.Repositories;
 using FoodDelivery.Domain;
 using FoodDelivery.Domain.Entities;
 
@@ -7,7 +7,7 @@ namespace FoodDelivery.Infrastructure.InMemory.Repositories;
 /// <summary>
 /// Репозиторий клиентов в памяти
 /// </summary>
-public class ClientRepository(DataSeeder seeder) : IRepository<Client>
+public class ClientRepository(DataSeeder seeder) : IClientRepository
 {
     /// <inheritdoc />
     public Task<IList<Client>> GetAll() => Task.FromResult<IList<Client>>(seeder.Clients);
@@ -18,7 +18,7 @@ public class ClientRepository(DataSeeder seeder) : IRepository<Client>
     /// <inheritdoc />
     public Task<Client> Add(Client entity)
     {
-        entity.Id = seeder.Clients.Any() ? seeder.Clients.Max(c => c.Id) + 1 : 1;
+        entity.Id = seeder.Clients.Count() > 0 ? seeder.Clients.Max(c => c.Id) + 1 : 1;
         seeder.Clients.Add(entity);
         return Task.FromResult(entity);
     }
@@ -26,14 +26,12 @@ public class ClientRepository(DataSeeder seeder) : IRepository<Client>
     /// <inheritdoc />
     public Task<Client> Update(Client entity)
     {
-        var existing = seeder.Clients.FirstOrDefault(c => c.Id == entity.Id);
-        if (existing != null)
-        {
-            existing.FullName = entity.FullName;
-            existing.PhoneNumber = entity.PhoneNumber;
-            existing.DeliveryAddress = entity.DeliveryAddress;
-        }
-        return Task.FromResult(existing!);
+        var existing = seeder.Clients.First(c => c.Id == entity.Id);
+
+        existing.FullName = entity.FullName;
+        existing.PhoneNumber = entity.PhoneNumber;
+        existing.DeliveryAddress = entity.DeliveryAddress;
+        return Task.FromResult(existing);
     }
 
     /// <inheritdoc />

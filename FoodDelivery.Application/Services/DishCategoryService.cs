@@ -1,14 +1,14 @@
-﻿using FoodDelivery.Application.Interfaces;
+﻿using FoodDelivery.Application.Interfaces.Repositories;
+using FoodDelivery.Application.Interfaces.Services;
 using FoodDelivery.Application.Mappers;
 using FoodDelivery.Contracts.Dtos.DishCategories;
-using FoodDelivery.Domain.Entities;
 
 namespace FoodDelivery.Application.Services;
 
 /// <summary>
 /// Сервис справочника категорий блюд
 /// </summary>
-public class DishCategoryService(IRepository<DishCategory> categoryRepository)
+public class DishCategoryService(IDishCategoryRepository categoryRepository) : IDishCategoryService
 {
     /// <summary>
     /// Создает новую категорию

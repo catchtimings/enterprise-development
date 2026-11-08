@@ -1,7 +1,7 @@
-using FoodDelivery.Application.Interfaces;
+using FoodDelivery.Application.Interfaces.Repositories;
+using FoodDelivery.Application.Interfaces.Services;
 using FoodDelivery.Application.Services;
 using FoodDelivery.Domain;
-using FoodDelivery.Domain.Entities;
 using FoodDelivery.Infrastructure.InMemory.Repositories;
 using Scalar.AspNetCore;
 
@@ -13,18 +13,18 @@ builder.Logging.AddConsole();
 
 builder.Services.AddSingleton<DataSeeder>();
 
-builder.Services.AddSingleton<IRepository<Client>, ClientRepository>();
-builder.Services.AddSingleton<IRepository<Restaurant>, RestaurantRepository>();
-builder.Services.AddSingleton<IRepository<Dish>, DishRepository>();
-builder.Services.AddSingleton<IRepository<DishCategory>, DishCategoryRepository>();
-builder.Services.AddSingleton<IRepository<Order>, OrderRepository>();
+builder.Services.AddSingleton<IClientRepository, ClientRepository>();
+builder.Services.AddSingleton<IRestaurantRepository, RestaurantRepository>();
+builder.Services.AddSingleton<IDishRepository, DishRepository>();
+builder.Services.AddSingleton<IDishCategoryRepository, DishCategoryRepository>();
+builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
 
-builder.Services.AddScoped<ClientService>();
-builder.Services.AddScoped<RestaurantService>();
-builder.Services.AddScoped<DishService>();
-builder.Services.AddScoped<DishCategoryService>();
-builder.Services.AddScoped<OrderService>();
-builder.Services.AddScoped<AnalyticsService>();
+builder.Services.AddScoped<IClientService, ClientService>();
+builder.Services.AddScoped<IRestaurantService, RestaurantService>();
+builder.Services.AddScoped<IDishService, DishService>();
+builder.Services.AddScoped<IDishCategoryService, DishCategoryService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 
 builder.Services.AddControllers();
 

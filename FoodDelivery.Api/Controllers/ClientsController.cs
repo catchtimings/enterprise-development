@@ -1,4 +1,5 @@
 ﻿using FoodDelivery.Application.Services;
+using FoodDelivery.Application.Interfaces.Services;
 using FoodDelivery.Contracts.Dtos.Clients;
 using FoodDelivery.Contracts.Dtos.Orders;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +14,10 @@ namespace FoodDelivery.Api.Controllers;
 /// <param name="logger">Логгер</param>
 [ApiController]
 [Route("api/clients")]
-public class ClientsController(ClientService clientService, OrderService orderService, ILogger<ClientsController> logger) : ControllerBase
+public class ClientsController(
+    IClientService clientService, 
+    IOrderService orderService, 
+    ILogger<ClientsController> logger) : ControllerBase
 {
     /// <summary>
     /// Возвращает список всех клиентов

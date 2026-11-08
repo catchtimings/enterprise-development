@@ -1,4 +1,5 @@
 ﻿using FoodDelivery.Application.Services;
+using FoodDelivery.Application.Interfaces.Services;
 using FoodDelivery.Contracts.Dtos.Restaurants;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,7 +12,7 @@ namespace FoodDelivery.Api.Controllers;
 /// <param name="logger">Логгер</param>
 [ApiController]
 [Route("api/restaurants")]
-public class RestaurantsController(RestaurantService restaurantService, ILogger<RestaurantsController> logger) : ControllerBase
+public class RestaurantsController(IRestaurantService restaurantService, ILogger<RestaurantsController> logger) : ControllerBase
 {
     /// <summary>
     /// Возвращает список всех ресторанов

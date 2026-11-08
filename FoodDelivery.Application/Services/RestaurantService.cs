@@ -1,14 +1,14 @@
-﻿using FoodDelivery.Application.Interfaces;
+﻿using FoodDelivery.Application.Interfaces.Repositories;
+using FoodDelivery.Application.Interfaces.Services;
 using FoodDelivery.Application.Mappers;
 using FoodDelivery.Contracts.Dtos.Restaurants;
-using FoodDelivery.Domain.Entities;
 
 namespace FoodDelivery.Application.Services;
 
 /// <summary>
 /// Сервис управления ресторанами
 /// </summary>
-public class RestaurantService(IRepository<Restaurant> restaurantRepository)
+public class RestaurantService(IRestaurantRepository restaurantRepository) : IRestaurantService
 {
     /// <summary>
     /// Создает новый ресторан

@@ -1,14 +1,15 @@
-﻿using FoodDelivery.Application.Interfaces;
+﻿using FoodDelivery.Application.Interfaces.Repositories;
+using FoodDelivery.Application.Interfaces.Services;
 using FoodDelivery.Application.Mappers;
 using FoodDelivery.Contracts.Dtos.Clients;
-using FoodDelivery.Domain.Entities;
 
 namespace FoodDelivery.Application.Services;
 
 /// <summary>
 /// Сервис управления клиентами
 /// </summary>
-public class ClientService(IRepository<Client> clientRepository)
+public class ClientService(IClientRepository clientRepository) :
+    IClientService
 {
     /// <summary>
     /// Создает нового клиента

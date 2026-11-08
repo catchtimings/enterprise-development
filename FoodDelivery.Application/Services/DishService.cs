@@ -1,7 +1,7 @@
-﻿using FoodDelivery.Application.Interfaces;
+﻿using FoodDelivery.Application.Interfaces.Repositories;
+using FoodDelivery.Application.Interfaces.Services;
 using FoodDelivery.Application.Mappers;
 using FoodDelivery.Contracts.Dtos.Dishes;
-using FoodDelivery.Domain.Entities;
 
 namespace FoodDelivery.Application.Services;
 
@@ -9,8 +9,8 @@ namespace FoodDelivery.Application.Services;
 /// Сервис управления блюдами
 /// </summary>
 public class DishService(
-    IRepository<Dish> dishRepository,
-    IRepository<DishCategory> categoryRepository)
+    IDishRepository dishRepository,
+    IDishCategoryRepository categoryRepository) : IDishService
 {
     /// <summary>
     /// Создает новое блюдо

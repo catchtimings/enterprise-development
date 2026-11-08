@@ -1,8 +1,8 @@
-﻿using FoodDelivery.Application.Interfaces;
+﻿using FoodDelivery.Application.Interfaces.Repositories;
+using FoodDelivery.Application.Interfaces.Services;
 using FoodDelivery.Application.Mappers;
 using FoodDelivery.Contracts.Dtos.Analytics;
 using FoodDelivery.Contracts.Dtos.Clients;
-using FoodDelivery.Domain.Entities;
 
 namespace FoodDelivery.Application.Services;
 
@@ -10,8 +10,8 @@ namespace FoodDelivery.Application.Services;
 /// Сервис аналитики
 /// </summary>
 public class AnalyticsService(
-    IRepository<Order> orderRepository,
-    IRepository<Restaurant> restaurantRepository)
+    IOrderRepository orderRepository,
+    IRestaurantRepository restaurantRepository) : IAnalyticsService
 {
     /// <summary>
     /// Возвращает пять ресторанов с наибольшим количеством заказов

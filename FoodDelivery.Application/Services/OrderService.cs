@@ -1,4 +1,5 @@
-﻿using FoodDelivery.Application.Interfaces;
+﻿using FoodDelivery.Application.Interfaces.Repositories;
+using FoodDelivery.Application.Interfaces.Services;
 using FoodDelivery.Application.Mappers;
 using FoodDelivery.Contracts.Dtos.Orders;
 using FoodDelivery.Domain.Entities;
@@ -9,10 +10,11 @@ namespace FoodDelivery.Application.Services;
 /// Сервис управления заказами
 /// </summary>
 public class OrderService(
-    IRepository<Order> orderRepository,
-    IRepository<Client> clientRepository,
-    IRepository<Restaurant> restaurantRepository,
-    IRepository<Dish> dishRepository)
+    IOrderRepository orderRepository,
+    IClientRepository clientRepository,
+    IRestaurantRepository restaurantRepository,
+    IDishRepository dishRepository)
+    : IOrderService
 {
     /// <summary>
     /// Создает новый заказ
@@ -24,7 +26,7 @@ public class OrderService(
         var restaurant = await restaurantRepository.GetById(dto.RestaurantId)
             ?? throw new KeyNotFoundException("Ресторан не найден");
 
-        DateTime createdAtVar = DateTime.UtcNow;
+        var createdAtVar = DateTime.UtcNow;
 
         if (dto.DeliveredAt.HasValue && dto.DeliveredAt.Value < createdAtVar)
             throw new ArgumentException("Время доставки не может быть раньше времени создания заказа");
@@ -123,7 +125,7 @@ public class OrderService(
     /// <summary>
     /// Удаляет заказ
     /// </summary>
-    public Task Delete(int id) => orderRepository.Delete(id);
+    public Task<bool> Delete(int id) => orderRepository.Delete(id);
 
     /// <summary>
     /// Возвращает позиции указанного заказа

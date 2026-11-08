@@ -1,4 +1,5 @@
 ﻿using FoodDelivery.Application.Services;
+using FoodDelivery.Application.Interfaces.Services;
 using FoodDelivery.Contracts.Dtos.DishCategories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,7 +12,9 @@ namespace FoodDelivery.Api.Controllers;
 /// <param name="logger">Логгер</param>
 [ApiController]
 [Route("api/dish-categories")]
-public class DishCategoriesController(DishCategoryService categoryService, ILogger<DishCategoriesController> logger) : ControllerBase
+public class DishCategoriesController(
+    IDishCategoryService categoryService, 
+    ILogger<DishCategoriesController> logger) : ControllerBase
 {
     /// <summary>
     /// Возвращает список всех категорий

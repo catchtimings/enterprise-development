@@ -1,4 +1,4 @@
-﻿using FoodDelivery.Application.Interfaces;
+﻿using FoodDelivery.Application.Interfaces.Repositories;
 using FoodDelivery.Domain;
 using FoodDelivery.Domain.Entities;
 
@@ -7,7 +7,7 @@ namespace FoodDelivery.Infrastructure.InMemory.Repositories;
 /// <summary>
 /// Репозиторий заказов в памяти
 /// </summary>
-public class OrderRepository(DataSeeder seeder) : IRepository<Order>
+public class OrderRepository(DataSeeder seeder) : IOrderRepository
 {
     /// <inheritdoc />
     public Task<IList<Order>> GetAll() => Task.FromResult<IList<Order>>(seeder.Orders);
