@@ -1,21 +1,28 @@
 using FoodDelivery.Application.Interfaces.Repositories;
 using FoodDelivery.Application.Interfaces.Services;
 using FoodDelivery.Application.Services;
-using FoodDelivery.Domain;
-using FoodDelivery.Infrastructure.InMemory.Repositories;
+using FoodDelivery.Infrastructure.EFCore;
+using FoodDelivery.Infrastructure.EFCore.Repositories;
+using FoodDelivery.ServiceDefaults;
+using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+builder.AddMySqlDbContext<FoodDeliveryDbContext>("fooddeliverydb");
+
+builder.AddServiceDefaults();
+
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
-builder.Services.AddSingleton<IClientRepository, ClientRepository>();
-builder.Services.AddSingleton<IRestaurantRepository, RestaurantRepository>();
-builder.Services.AddSingleton<IDishRepository, DishRepository>();
-builder.Services.AddSingleton<IDishCategoryRepository, DishCategoryRepository>();
-builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IClientRepository, ClientEfCoreRepository>();
+builder.Services.AddScoped<IRestaurantRepository, RestaurantEfCoreRepository>();
+builder.Services.AddScoped<IDishRepository, DishEfCoreRepository>();
+builder.Services.AddScoped<IDishCategoryRepository, DishCategoryEfCoreRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderEfCoreRepository>();
 
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IRestaurantService, RestaurantService>();
@@ -34,8 +41,14 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.MapScalarApiReference();
+
+    using var scope = app.Services.CreateScope();
+
+    var db = scope.ServiceProvider.GetRequiredService<FoodDeliveryDbContext>();
+    db.Database.Migrate();
 }
 
+app.MapDefaultEndpoints();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
