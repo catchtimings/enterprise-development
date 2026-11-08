@@ -104,22 +104,29 @@ public class OrderService(
                 ?? throw new KeyNotFoundException($"Блюдо {itemDto.DishId} не найдено");
 
             var item = OrderMapper.Map(itemDto);
-            item.OrderId = id;
+            item.DishId = dish.Id;
             item.Dish = dish;
             item.PriceAtOrder = dish.Price;
             items.Add(item);
         }
 
-        existing.ClientId = client.Id;
-        existing.Client = client;
-        existing.RestaurantId = restaurant.Id;
-        existing.Restaurant = restaurant;
-        existing.DeliveredAt = dto.DeliveredAt;
-        existing.Items = items;
-        existing.TotalAmount = existing.Items.Sum(i => i.Quantity * i.PriceAtOrder);
+        var updated = new Order
+        {
+            Id = id,
+            ClientId = client.Id,
+            Client = client,
+            RestaurantId = restaurant.Id,
+            Restaurant = restaurant,
+            CreatedAt = existing.CreatedAt,
+            DeliveredAt = dto.DeliveredAt,
+            Items = items,
+            TotalAmount = items.Sum(i => i.Quantity * i.PriceAtOrder)
+        };
 
-        var updatedOrder = await orderRepository.Update(existing);
-        return OrderMapper.Map(updatedOrder);
+        await orderRepository.Update(updated);
+
+        var result = await orderRepository.GetById(id);
+        return OrderMapper.Map(result!);
     }
 
     /// <summary>

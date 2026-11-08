@@ -51,25 +51,38 @@ public class OrderEfCoreRepository(FoodDeliveryDbContext dbContext) : IOrderRepo
             .FirstOrDefaultAsync(o => o.Id == id);
 
     /// <inheritdoc />
+    /// <inheritdoc />
     public async Task<Order> Update(Order entity)
     {
         var existing = await dbContext.Orders
             .Include(o => o.Items)
-            .FirstOrDefaultAsync(o => o.Id == entity.Id);
-
-        if (existing == null)
-            throw new KeyNotFoundException($"Заказ с Id {entity.Id} не найден");
+            .FirstOrDefaultAsync(o => o.Id == entity.Id)
+            ?? throw new KeyNotFoundException($"Заказ с Id {entity.Id} не найден");
 
         existing.ClientId = entity.ClientId;
         existing.RestaurantId = entity.RestaurantId;
-        existing.CreatedAt = entity.CreatedAt;
         existing.DeliveredAt = entity.DeliveredAt;
         existing.TotalAmount = entity.TotalAmount;
 
         dbContext.OrderItems.RemoveRange(existing.Items);
-        existing.Items = entity.Items;
+        existing.Items.Clear();
+
+        foreach (var item in entity.Items)
+        {
+            existing.Items.Add(new OrderItem
+            {
+                Id = 0,
+                OrderId = existing.Id,
+                DishId = item.DishId,
+                Quantity = item.Quantity,
+                PriceAtOrder = item.PriceAtOrder
+            });
+        }
 
         await dbContext.SaveChangesAsync();
-        return existing;
+
+        dbContext.ChangeTracker.Clear();
+
+        return (await GetById(existing.Id))!;
     }
 }

@@ -75,7 +75,7 @@ public class FoodDeliveryDbContext(DbContextOptions<FoodDeliveryDbContext> optio
             entity.Property(d => d.Id).IsRequired();
             entity.Property(d => d.Name).HasMaxLength(200).IsRequired();
 
-            entity.HasOne<DishCategory>()
+            entity.HasOne(d => d.Category)
                 .WithMany()
                 .HasForeignKey(d => d.CategoryId)
                 .IsRequired();
@@ -116,15 +116,21 @@ public class FoodDeliveryDbContext(DbContextOptions<FoodDeliveryDbContext> optio
             entity.Property(o => o.CreatedAt).IsRequired();
             entity.Property(o => o.TotalAmount).IsRequired();
 
-            entity.HasOne<Client>()
+            entity.HasOne(o => o.Client)
                 .WithMany()
                 .HasForeignKey(o => o.ClientId)
                 .IsRequired();
 
-            entity.HasOne<Restaurant>()
+            entity.HasOne(o => o.Restaurant)
                 .WithMany()
                 .HasForeignKey(o => o.RestaurantId)
                 .IsRequired();
+
+            entity.HasMany(o => o.Items)
+                .WithOne()
+                .HasForeignKey(i => i.OrderId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasData(DataSeeder.Orders.Select(o => new
             {
@@ -157,6 +163,7 @@ public class FoodDeliveryDbContext(DbContextOptions<FoodDeliveryDbContext> optio
             }));
         });
 
+        // Конфигурация сущности OrderItem в базе данных
         modelBuilder.Entity<OrderItem>(entity =>
         {
             entity.HasKey(i => i.Id);
@@ -166,7 +173,7 @@ public class FoodDeliveryDbContext(DbContextOptions<FoodDeliveryDbContext> optio
             entity.Property(i => i.Quantity).IsRequired();
             entity.Property(i => i.PriceAtOrder).HasPrecision(18, 2).IsRequired();
 
-            entity.HasOne<Dish>()
+            entity.HasOne(i => i.Dish)
                 .WithMany()
                 .HasForeignKey(i => i.DishId)
                 .IsRequired();
