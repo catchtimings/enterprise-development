@@ -3,6 +3,7 @@ using FoodDelivery.Application.Interfaces.Services;
 using FoodDelivery.Application.Services;
 using FoodDelivery.Infrastructure.EFCore;
 using FoodDelivery.Infrastructure.EFCore.Repositories;
+using FoodDelivery.Infrastructure.InMemory.Repositories;
 using FoodDelivery.ServiceDefaults;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
@@ -12,8 +13,6 @@ var builder = WebApplication.CreateBuilder(args);
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 
 builder.AddMySqlDbContext<FoodDeliveryDbContext>("fooddeliverydb");
-
-
 
 builder.AddServiceDefaults();
 

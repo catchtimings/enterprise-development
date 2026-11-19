@@ -9,19 +9,21 @@ namespace FoodDelivery.Infrastructure.InMemory.Repositories;
 /// </summary>
 public class OrderInMemoryRepository : IOrderRepository
 {
-    /// <inheritdoc />
-    public Task<IList<Order>> GetAll() => Task.FromResult<IList<Order>>(DataSeeder.Orders);
+    private readonly List<Order> _orders = [.. DataSeeder.Orders];
 
     /// <inheritdoc />
-    public Task<Order?> GetById(int id) => Task.FromResult(DataSeeder.Orders.FirstOrDefault(o => o.Id == id));
+    public Task<IList<Order>> GetAll() => Task.FromResult<IList<Order>>(_orders);
+
+    /// <inheritdoc />
+    public Task<Order?> GetById(int id) => Task.FromResult(_orders.FirstOrDefault(o => o.Id == id));
 
     /// <inheritdoc />
     public Task<Order> Add(Order entity)
     {
-        entity.Id = DataSeeder.Orders.Any() ? DataSeeder.Orders.Max(o => o.Id) + 1 : 1;
+        entity.Id = _orders.Any() ? _orders.Max(o => o.Id) + 1 : 1;
 
-        var nextItemId = DataSeeder.Orders.SelectMany(o => o.Items).Any()
-            ? DataSeeder.Orders.SelectMany(o => o.Items).Max(i => i.Id) + 1
+        var nextItemId = _orders.SelectMany(o => o.Items).Any()
+            ? _orders.SelectMany(o => o.Items).Max(i => i.Id) + 1
             : 1;
 
         foreach (var item in entity.Items)
@@ -30,14 +32,14 @@ public class OrderInMemoryRepository : IOrderRepository
             item.OrderId = entity.Id;
         }
 
-        DataSeeder.Orders.Add(entity);
+        _orders.Add(entity);
         return Task.FromResult(entity);
     }
 
     /// <inheritdoc />
     public Task<Order> Update(Order entity)
     {
-        var existing = DataSeeder.Orders.FirstOrDefault(o => o.Id == entity.Id);
+        var existing = _orders.FirstOrDefault(o => o.Id == entity.Id);
         if (existing != null)
         {
             existing.ClientId = entity.ClientId;
@@ -54,10 +56,79 @@ public class OrderInMemoryRepository : IOrderRepository
     /// <inheritdoc />
     public Task<bool> Delete(int id)
     {
-        var existing = DataSeeder.Orders.FirstOrDefault(o => o.Id == id);
+        var existing = _orders.FirstOrDefault(o => o.Id == id);
         if (existing == null) return Task.FromResult(false);
 
-        DataSeeder.Orders.Remove(existing);
+        _orders.Remove(existing);
         return Task.FromResult(true);
+    }
+
+    /// <inheritdoc />
+    public Task<IList<(int RestaurantId, int OrderCount)>> GetRestaurantOrderCounts()
+    {
+        var result = _orders
+            .GroupBy(o => o.RestaurantId)
+            .Select(g => (g.Key, g.Count()))
+            .ToList();
+
+        return Task.FromResult<IList<(int, int)>>(result);
+    }
+
+    /// <inheritdoc />
+    public Task<IList<Order>> GetOrdersWithMinDelivery()
+    {
+        var delivered = _orders.Where(o => o.DeliveryDuration.HasValue).ToList();
+        if (!delivered.Any()) return Task.FromResult<IList<Order>>(new List<Order>());
+
+        var minMs = delivered.Min(o => o.DeliveryDuration!.Value.TotalMilliseconds);
+        var result = delivered.Where(o => o.DeliveryDuration!.Value.TotalMilliseconds == minMs).ToList();
+
+        return Task.FromResult<IList<Order>>(result);
+    }
+
+    /// <inheritdoc />
+    public Task<IList<Client>> GetClientsByRestaurant(int restaurantId)
+    {
+        var result = _orders
+            .Where(o => o.RestaurantId == restaurantId && o.Client != null)
+            .Select(o => o.Client!)
+            .DistinctBy(c => c.Id)
+            .ToList();
+
+        return Task.FromResult<IList<Client>>(result);
+    }
+
+    /// <inheritdoc />
+    public Task<IList<(string CategoryName, int OrderCount, decimal AverageSum, decimal TotalSum)>> GetCategorySummary(DateTime startDate, DateTime endDate)
+    {
+        var result = _orders
+            .Where(o => o.CreatedAt >= startDate && o.CreatedAt <= endDate)
+            .SelectMany(o => o.Items)
+            .Where(i => i.Dish?.Category != null)
+            .GroupBy(i => i.Dish!.Category!.Name)
+            .Select(g => (
+                CategoryName: g.Key,
+                OrderCount: g.Select(i => i.OrderId).Distinct().Count(),
+                AverageSum: g.Average(i => i.Quantity * i.PriceAtOrder),
+                TotalSum: g.Sum(i => i.Quantity * i.PriceAtOrder)
+            ))
+            .ToList();
+
+        return Task.FromResult<IList<(string, int, decimal, decimal)>>(result);
+    }
+
+    /// <inheritdoc />
+    public Task<IList<(Client Client, decimal TotalSpent)>> GetClientSpendingTotals()
+    {
+        var result = _orders
+            .Where(o => o.Client != null)
+            .GroupBy(o => o.Client!.Id)
+            .Select(g => (
+                Client: g.First().Client!,
+                TotalSpent: g.Sum(o => o.TotalAmount)
+            ))
+            .ToList();
+
+        return Task.FromResult<IList<(Client, decimal)>>(result);
     }
 }

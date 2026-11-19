@@ -9,24 +9,26 @@ namespace FoodDelivery.Infrastructure.InMemory.Repositories;
 /// </summary>
 public class RestaurantInMemoryRepository : IRestaurantRepository
 {
-    /// <inheritdoc />
-    public Task<IList<Restaurant>> GetAll() => Task.FromResult<IList<Restaurant>>(DataSeeder.Restaurants);
+    private readonly List<Restaurant> _restaurants = [.. DataSeeder.Restaurants];
 
     /// <inheritdoc />
-    public Task<Restaurant?> GetById(int id) => Task.FromResult(DataSeeder.Restaurants.FirstOrDefault(r => r.Id == id));
+    public Task<IList<Restaurant>> GetAll() => Task.FromResult<IList<Restaurant>>(_restaurants);
+
+    /// <inheritdoc />
+    public Task<Restaurant?> GetById(int id) => Task.FromResult(_restaurants.FirstOrDefault(r => r.Id == id));
 
     /// <inheritdoc />
     public Task<Restaurant> Add(Restaurant entity)
     {
-        entity.Id = DataSeeder.Restaurants.Any() ? DataSeeder.Restaurants.Max(r => r.Id) + 1 : 1;
-        DataSeeder.Restaurants.Add(entity);
+        entity.Id = _restaurants.Any() ? _restaurants.Max(r => r.Id) + 1 : 1;
+        _restaurants.Add(entity);
         return Task.FromResult(entity);
     }
 
     /// <inheritdoc />
     public Task<Restaurant> Update(Restaurant entity)
     {
-        var existing = DataSeeder.Restaurants.FirstOrDefault(r => r.Id == entity.Id);
+        var existing = _restaurants.FirstOrDefault(r => r.Id == entity.Id);
         if (existing != null)
         {
             existing.Name = entity.Name;
@@ -41,10 +43,10 @@ public class RestaurantInMemoryRepository : IRestaurantRepository
     /// <inheritdoc />
     public Task<bool> Delete(int id)
     {
-        var existing = DataSeeder.Restaurants.FirstOrDefault(r => r.Id == id);
+        var existing = _restaurants.FirstOrDefault(r => r.Id == id);
         if (existing == null) return Task.FromResult(false);
 
-        DataSeeder.Restaurants.Remove(existing);
+        _restaurants.Remove(existing);
         return Task.FromResult(true);
     }
 }
