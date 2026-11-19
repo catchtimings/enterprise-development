@@ -25,9 +25,16 @@ public class DishEfCoreRepository(FoodDeliveryDbContext dbContext) : IDishReposi
         if (entity == null)
             return false;
 
-        dbContext.Dishes.Remove(entity);
-        await dbContext.SaveChangesAsync();
-        return true;
+        try
+        {
+            dbContext.Dishes.Remove(entity);
+            await dbContext.SaveChangesAsync();
+            return true;
+        }
+        catch (DbUpdateException)
+        {
+            throw new ArgumentException("Нельзя удалить блюдо, так как оно используется в заказах");
+        }
     }
 
     /// <inheritdoc />

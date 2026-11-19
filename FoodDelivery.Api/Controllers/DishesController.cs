@@ -125,6 +125,7 @@ public class DishesController(IDishService dishService, ILogger<DishesController
     /// <returns>Статус 204 No Content</returns>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(204)]
+    [ProducesResponseType(400)]
     [ProducesResponseType(500)]
     public async Task<ActionResult> Delete(int id)
     {
@@ -133,6 +134,11 @@ public class DishesController(IDishService dishService, ILogger<DishesController
             await dishService.Delete(id);
             logger.LogInformation("{Time} - Удалено блюдо с Id {Id} - Response code: 204", DateTime.UtcNow, id);
             return NoContent();
+        }
+        catch (ArgumentException ex)
+        {
+            logger.LogWarning(ex, "{Time} - Невозможно удалить блюдо с Id {Id} - Response code: 400", DateTime.UtcNow, id);
+            return BadRequest(new { message = ex.Message });
         }
         catch (Exception ex)
         {

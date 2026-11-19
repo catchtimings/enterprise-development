@@ -43,17 +43,15 @@ public class FoodDeliveryDbContext(DbContextOptions<FoodDeliveryDbContext> optio
     /// <summary>
     /// Конфигурация модели базы данных
     /// </summary>
-    /// <param name="modelBuilder"></param>
+    /// <param name="modelBuilder">Строитель модели БД</param>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder); // на всякий пожарный
+        base.OnModelCreating(modelBuilder);
 
-        // Конфигурация сущности Client в базе данных 
         modelBuilder.Entity<Client>(entity =>
         {
             entity.HasKey(c => c.Id);
 
-            entity.Property(c => c.Id).IsRequired();
             entity.Property(c => c.FullName).HasMaxLength(200).IsRequired();
             entity.Property(c => c.PhoneNumber).HasMaxLength(30).IsRequired();
             entity.Property(c => c.DeliveryAddress).HasMaxLength(300).IsRequired();
@@ -67,12 +65,10 @@ public class FoodDeliveryDbContext(DbContextOptions<FoodDeliveryDbContext> optio
             }));
         });
 
-        // Конфигурация сущности Dish в базе данных
         modelBuilder.Entity<Dish>(entity =>
         {
             entity.HasKey(d => d.Id);
 
-            entity.Property(d => d.Id).IsRequired();
             entity.Property(d => d.Name).HasMaxLength(200).IsRequired();
 
             entity.HasOne(d => d.Category)
@@ -90,12 +86,10 @@ public class FoodDeliveryDbContext(DbContextOptions<FoodDeliveryDbContext> optio
             }));
         });
 
-        // Конфигурация сущности DishCategory в базе данных
         modelBuilder.Entity<DishCategory>(entity =>
         {
             entity.HasKey(dc => dc.Id);
 
-            entity.Property(dc => dc.Id).IsRequired();
             entity.Property(dc => dc.Name).HasMaxLength(100).IsRequired();
 
             entity.HasData(DataSeeder.Categories.Select(c => new
@@ -105,12 +99,10 @@ public class FoodDeliveryDbContext(DbContextOptions<FoodDeliveryDbContext> optio
             }));
         });
 
-        // Конфигурация сущности Order в базе данных
         modelBuilder.Entity<Order>(entity =>
         {
             entity.HasKey(o => o.Id);
 
-            entity.Property(o => o.Id).IsRequired();
             entity.Property(o => o.ClientId).IsRequired();
             entity.Property(o => o.RestaurantId).IsRequired();
             entity.Property(o => o.CreatedAt).IsRequired();
@@ -143,12 +135,10 @@ public class FoodDeliveryDbContext(DbContextOptions<FoodDeliveryDbContext> optio
             }));
         });
 
-        // Конфигурация сущности Restaurant в базе данных
         modelBuilder.Entity<Restaurant>(entity =>
         {
             entity.HasKey(r => r.Id);
 
-            entity.Property(r => r.Id).IsRequired();
             entity.Property(r => r.Name).HasMaxLength(200).IsRequired();
             entity.Property(r => r.Address).HasMaxLength(300).IsRequired();
 
@@ -163,11 +153,10 @@ public class FoodDeliveryDbContext(DbContextOptions<FoodDeliveryDbContext> optio
             }));
         });
 
-        // Конфигурация сущности OrderItem в базе данных
         modelBuilder.Entity<OrderItem>(entity =>
         {
             entity.HasKey(i => i.Id);
-            entity.Property(i => i.Id).IsRequired();
+
             entity.Property(i => i.OrderId).IsRequired();
             entity.Property(i => i.DishId).IsRequired();
             entity.Property(i => i.Quantity).IsRequired();
@@ -176,7 +165,8 @@ public class FoodDeliveryDbContext(DbContextOptions<FoodDeliveryDbContext> optio
             entity.HasOne(i => i.Dish)
                 .WithMany()
                 .HasForeignKey(i => i.DishId)
-                .IsRequired();
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
 
             entity.HasData(DataSeeder.Orders
                 .SelectMany(o => o.Items)

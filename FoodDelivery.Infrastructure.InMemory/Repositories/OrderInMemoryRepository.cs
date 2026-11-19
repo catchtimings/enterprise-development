@@ -7,7 +7,7 @@ namespace FoodDelivery.Infrastructure.InMemory.Repositories;
 /// <summary>
 /// Репозиторий заказов в памяти
 /// </summary>
-public class OrderRepository : IOrderRepository
+public class OrderInMemoryRepository : IOrderRepository
 {
     /// <inheritdoc />
     public Task<IList<Order>> GetAll() => Task.FromResult<IList<Order>>(DataSeeder.Orders);

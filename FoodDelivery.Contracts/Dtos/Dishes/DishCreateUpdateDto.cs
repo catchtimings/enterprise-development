@@ -12,6 +12,6 @@ namespace FoodDelivery.Contracts.Dtos.Dishes;
 public record DishCreateUpdateDto(
     [Required, StringLength(200, MinimumLength = 1)] string Name,
     [Range(1, 10000)] int Weight,
-    [Range(typeof(decimal), "0.01", "1000000")] decimal Price,
+    [Range(1, 1000000)] decimal Price,
     [Range(1, int.MaxValue)] int CategoryId
 );

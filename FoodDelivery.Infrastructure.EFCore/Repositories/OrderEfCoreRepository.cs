@@ -51,7 +51,6 @@ public class OrderEfCoreRepository(FoodDeliveryDbContext dbContext) : IOrderRepo
             .FirstOrDefaultAsync(o => o.Id == id);
 
     /// <inheritdoc />
-    /// <inheritdoc />
     public async Task<Order> Update(Order entity)
     {
         var existing = await dbContext.Orders

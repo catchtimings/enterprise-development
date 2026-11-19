@@ -7,7 +7,7 @@ namespace FoodDelivery.Infrastructure.InMemory.Repositories;
 /// <summary>
 /// Репозиторий категорий блюд в памяти
 /// </summary>
-public class DishCategoryRepository : IDishCategoryRepository
+public class DishCategoryInMemoryRepository : IDishCategoryRepository
 {
     /// <inheritdoc />
     public Task<IList<DishCategory>> GetAll() => Task.FromResult<IList<DishCategory>>(DataSeeder.Categories);

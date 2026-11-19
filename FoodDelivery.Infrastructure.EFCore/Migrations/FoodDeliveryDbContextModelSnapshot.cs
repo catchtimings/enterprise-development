@@ -146,9 +146,6 @@ namespace FoodDelivery.Infrastructure.EFCore.Migrations
                         .HasColumnType("int")
                         .HasColumnName("category_id");
 
-                    b.Property<int?>("CategoryId1")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -166,8 +163,6 @@ namespace FoodDelivery.Infrastructure.EFCore.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("CategoryId1");
 
                     b.ToTable("dishes");
 
@@ -339,9 +334,6 @@ namespace FoodDelivery.Infrastructure.EFCore.Migrations
                         .HasColumnType("int")
                         .HasColumnName("client_id");
 
-                    b.Property<int?>("ClientId1")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("created_at");
@@ -354,9 +346,6 @@ namespace FoodDelivery.Infrastructure.EFCore.Migrations
                         .HasColumnType("int")
                         .HasColumnName("restaurant_id");
 
-                    b.Property<int?>("RestaurantId1")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(65,30)")
                         .HasColumnName("total_amount");
@@ -365,11 +354,7 @@ namespace FoodDelivery.Infrastructure.EFCore.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.HasIndex("ClientId1");
-
                     b.HasIndex("RestaurantId");
-
-                    b.HasIndex("RestaurantId1");
 
                     b.ToTable("orders");
 
@@ -488,9 +473,6 @@ namespace FoodDelivery.Infrastructure.EFCore.Migrations
                         .HasColumnType("int")
                         .HasColumnName("dish_id");
 
-                    b.Property<int?>("DishId1")
-                        .HasColumnType("int");
-
                     b.Property<int>("OrderId")
                         .HasColumnType("int")
                         .HasColumnName("order_id");
@@ -507,8 +489,6 @@ namespace FoodDelivery.Infrastructure.EFCore.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DishId");
-
-                    b.HasIndex("DishId1");
 
                     b.HasIndex("OrderId");
 
@@ -737,40 +717,28 @@ namespace FoodDelivery.Infrastructure.EFCore.Migrations
 
             modelBuilder.Entity("FoodDelivery.Domain.Entities.Dish", b =>
                 {
-                    b.HasOne("FoodDelivery.Domain.Entities.DishCategory", null)
+                    b.HasOne("FoodDelivery.Domain.Entities.DishCategory", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("FoodDelivery.Domain.Entities.DishCategory", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId1");
 
                     b.Navigation("Category");
                 });
 
             modelBuilder.Entity("FoodDelivery.Domain.Entities.Order", b =>
                 {
-                    b.HasOne("FoodDelivery.Domain.Entities.Client", null)
+                    b.HasOne("FoodDelivery.Domain.Entities.Client", "Client")
                         .WithMany()
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FoodDelivery.Domain.Entities.Client", "Client")
-                        .WithMany()
-                        .HasForeignKey("ClientId1");
-
-                    b.HasOne("FoodDelivery.Domain.Entities.Restaurant", null)
+                    b.HasOne("FoodDelivery.Domain.Entities.Restaurant", "Restaurant")
                         .WithMany()
                         .HasForeignKey("RestaurantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("FoodDelivery.Domain.Entities.Restaurant", "Restaurant")
-                        .WithMany()
-                        .HasForeignKey("RestaurantId1");
 
                     b.Navigation("Client");
 
@@ -779,15 +747,11 @@ namespace FoodDelivery.Infrastructure.EFCore.Migrations
 
             modelBuilder.Entity("FoodDelivery.Domain.Entities.OrderItem", b =>
                 {
-                    b.HasOne("FoodDelivery.Domain.Entities.Dish", null)
-                        .WithMany()
-                        .HasForeignKey("DishId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("FoodDelivery.Domain.Entities.Dish", "Dish")
                         .WithMany()
-                        .HasForeignKey("DishId1");
+                        .HasForeignKey("DishId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("FoodDelivery.Domain.Entities.Order", null)
                         .WithMany("Items")

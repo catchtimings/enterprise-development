@@ -19,6 +19,8 @@ public class AnalyticsController(IAnalyticsService analyticsService, ILogger<Ana
     /// </summary>
     /// <returns>Список ресторанов с количеством заказов</returns>
     [HttpGet("top-restaurants")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult<IList<RestaurantWithOrderCountDto>>> GetTop5RestaurantsByOrderCount()
     {
         try
@@ -40,6 +42,9 @@ public class AnalyticsController(IAnalyticsService analyticsService, ILogger<Ana
     /// </summary>
     /// <returns>Минимальное время доставки и список заказов</returns>
     [HttpGet("min-delivery-time-orders")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult<MinDeliveryTimeOrdersDto>> GetOrdersWithMinDelivery()
     {
         try
@@ -48,6 +53,11 @@ public class AnalyticsController(IAnalyticsService analyticsService, ILogger<Ana
             var result = await analyticsService.GetOrdersWithMinDelivery();
             logger.LogInformation("{Time} - Успешно получены заказы с минимальным временем доставки - Response code: 200", DateTime.UtcNow);
             return Ok(result);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            logger.LogWarning(ex, "{Time} - Нет доставленных заказов - Response code: 404", DateTime.UtcNow);
+            return NotFound(new { message = ex.Message });
         }
         catch (Exception ex)
         {
@@ -62,6 +72,9 @@ public class AnalyticsController(IAnalyticsService analyticsService, ILogger<Ana
     /// <param name="restaurantId">Идентификатор ресторана</param>
     /// <returns>Список клиентов ресторана</returns>
     [HttpGet("restaurant/{restaurantId:int}/clients")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult<IList<ClientDto>>> GetClientsByRestaurant(int restaurantId)
     {
         try
@@ -70,6 +83,11 @@ public class AnalyticsController(IAnalyticsService analyticsService, ILogger<Ana
             var result = await analyticsService.GetClientsByRestaurant(restaurantId);
             logger.LogInformation("{Time} - Успешно получены клиенты ресторана с Id {RestaurantId} - Response code: 200", DateTime.UtcNow, restaurantId);
             return Ok(result);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            logger.LogWarning(ex, "{Time} - Ресторан с Id {RestaurantId} не найден - Response code: 404", DateTime.UtcNow, restaurantId);
+            return NotFound(new { message = ex.Message });
         }
         catch (Exception ex)
         {
@@ -85,6 +103,8 @@ public class AnalyticsController(IAnalyticsService analyticsService, ILogger<Ana
     /// <param name="endDate">Конечная дата периода</param>
     /// <returns>Список категорий с агрегированной статистикой</returns>
     [HttpGet("category-summary")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult<IList<CategorySummaryDto>>> GetCategoryOrderSummary(
         [FromQuery] DateTime startDate,
         [FromQuery] DateTime endDate)
@@ -108,6 +128,8 @@ public class AnalyticsController(IAnalyticsService analyticsService, ILogger<Ana
     /// </summary>
     /// <returns>Список клиентов и их общая сумма трат</returns>
     [HttpGet("top-spenders")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult<IList<TopSpenderDto>>> GetTopSpenderClients()
     {
         try
