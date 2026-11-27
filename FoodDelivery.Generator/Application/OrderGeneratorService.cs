@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 namespace FoodDelivery.Generator.Application;
 
 /// <summary>
-/// Фоновая служба автоматической генерации и отправки заказов
+/// Генерации и отправка заказов
 /// </summary>
 public class OrderGeneratorService(
     IConfiguration configuration,
@@ -32,11 +32,10 @@ public class OrderGeneratorService(
         var sent = 0;
         using var scope = scopeFactory.CreateScope();
         var producer = scope.ServiceProvider.GetRequiredService<IProducerService>();
-        var generator = scope.ServiceProvider.GetRequiredService<BogusOrderGenerator>();
 
         while (sent < _payloadLimit && !cancellationToken.IsCancellationRequested)
         {
-            var batch = generator.GenerateBatch(Math.Min(_batchSize, _payloadLimit - sent));
+            var batch = OrderGenerator.GenerateBatch(Math.Min(_batchSize, _payloadLimit - sent));
             await producer.SendAsync(batch, cancellationToken);
             sent += batch.Count;
 

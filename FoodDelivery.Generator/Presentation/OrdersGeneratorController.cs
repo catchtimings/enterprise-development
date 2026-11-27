@@ -10,23 +10,16 @@ namespace FoodDelivery.Generator.Presentation;
 /// Контроллер запуска генерации заказов
 /// </summary>
 /// <param name="producer">Служба отправки</param>
-/// <param name="generator">Генератор контрактов</param>
 /// <param name="logger">Логгер</param>
 [ApiController]
 [Route("api/generator")]
 public class OrdersGeneratorController(
     IProducerService producer,
-    BogusOrderGenerator generator,
     ILogger<OrdersGeneratorController> logger) : ControllerBase
 {
     /// <summary>
     /// Генерирует и отправляет заданное число контрактов заказов
     /// </summary>
-    /// <param name="batchSize">Размер батча</param>
-    /// <param name="payloadLimit">Общее число контрактов</param>
-    /// <param name="waitTime">Пауза между батчами в секундах</param>
-    /// <param name="cancellationToken">Токен отмены</param>
-    /// <returns>Список отправленных контрактов</returns>
     [HttpGet]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
@@ -51,7 +44,7 @@ public class OrdersGeneratorController(
 
             while (sent < payloadLimit && !cancellationToken.IsCancellationRequested)
             {
-                var batch = generator.GenerateBatch(Math.Min(batchSize, payloadLimit - sent));
+                var batch = OrderGenerator.GenerateBatch(Math.Min(batchSize, payloadLimit - sent));
                 await producer.SendAsync(batch, cancellationToken);
                 sent += batch.Count;
                 all.AddRange(batch);
