@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Bogus;
+﻿using Bogus;
 using FoodDelivery.Contracts.Dtos.Orders;
 
 namespace FoodDelivery.Generator.Domain;

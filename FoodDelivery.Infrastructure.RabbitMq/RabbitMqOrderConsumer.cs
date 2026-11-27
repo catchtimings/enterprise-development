@@ -1,11 +1,11 @@
-﻿using System.Text.Json;
-using FoodDelivery.Application.Interfaces.Services;
+﻿using FoodDelivery.Application.Interfaces.Services;
 using FoodDelivery.Contracts.Dtos.Orders;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
+using System.Text.Json;
 
 namespace FoodDelivery.Infrastructure.RabbitMq;
 
@@ -106,7 +106,7 @@ public class RabbitMqOrderConsumer(
     /// <summary>
     /// Обработчик сообщений очереди
     /// </summary>
-    private sealed class OrderBatchConsumer(
+    private class OrderBatchConsumer(
         IChannel channel,
         IServiceScopeFactory scopeFactory,
         ILogger logger) : AsyncDefaultBasicConsumer(channel)
