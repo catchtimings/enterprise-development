@@ -14,6 +14,9 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Регистрирует службы генератора контрактов
     /// </summary>
+    /// <typeparam name="TProducer">Реализация IProducerService</typeparam>
+    /// <param name="services">Коллекция служб</param>
+    /// <returns>Коллекция служб</returns>
     public static IServiceCollection AddGeneratorServices<TProducer>(this IServiceCollection services)
         where TProducer : class, IProducerService
     {
@@ -26,6 +29,8 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Настраивает конвейер обработки запросов генератора
     /// </summary>
+    /// <param name="app">Веб-приложение</param>
+    /// <returns>Веб-приложение</returns>
     public static WebApplication UseGeneratorServices(this WebApplication app)
     {
         app.MapControllers();

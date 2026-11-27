@@ -20,6 +20,11 @@ public class OrdersGeneratorController(
     /// <summary>
     /// Генерирует и отправляет заданное число контрактов заказов
     /// </summary>
+    /// <param name="batchSize">Размер батча</param>
+    /// <param name="payloadLimit">Общее число контрактов</param>
+    /// <param name="waitTime">Пауза между батчами в секундах</param>
+    /// <param name="cancellationToken">Токен отмены</param>
+    /// <returns>Список отправленных контрактов</returns>
     [HttpGet]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]

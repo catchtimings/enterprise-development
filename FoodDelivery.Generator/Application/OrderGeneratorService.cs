@@ -10,6 +10,9 @@ namespace FoodDelivery.Generator.Application;
 /// <summary>
 /// Генерации и отправка заказов
 /// </summary>
+/// <param name="configuration">Конфигурация с параметрами генератора</param>
+/// <param name="scopeFactory">Фабрика для создания scope с зависимостями</param>
+/// <param name="logger">Логгер</param>
 public class OrderGeneratorService(
     IConfiguration configuration,
     IServiceScopeFactory scopeFactory,
