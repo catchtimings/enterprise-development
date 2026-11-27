@@ -14,7 +14,7 @@ public class OrderService(
     IClientRepository clientRepository,
     IRestaurantRepository restaurantRepository,
     IDishRepository dishRepository)
-    : IOrderService
+    : IOrderService, IOrderBatchReceiver
 {
     /// <summary>
     /// Создает новый заказ
@@ -143,5 +143,33 @@ public class OrderService(
             ?? throw new KeyNotFoundException("Заказ не найден");
 
         return order.Items.Select(OrderMapper.Map).ToList();
+    }
+
+
+    /// <inheritdoc />
+    public async Task<int> ReceiveBatch(IList<OrderCreateUpdateDto> batch, CancellationToken cancellationToken)
+    {
+        var saved = 0;
+
+        foreach (var dto in batch)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            try
+            {
+                await Create(dto);
+                saved++;
+            }
+            catch (KeyNotFoundException)
+            {
+                // Заказ с несуществующими id пропускается
+            }
+            catch (ArgumentException)
+            {
+                // Заказ с некорректными данными пропускается
+            }
+        }
+
+        return saved;
     }
 }
