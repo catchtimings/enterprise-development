@@ -28,7 +28,9 @@ builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IRestaurantService, RestaurantService>();
 builder.Services.AddScoped<IDishService, DishService>();
 builder.Services.AddScoped<IDishCategoryService, DishCategoryService>();
-builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<OrderService>();
+builder.Services.AddScoped<IOrderService>(sp => sp.GetRequiredService<OrderService>());
+builder.Services.AddScoped<IOrderBatchReceiver>(sp => sp.GetRequiredService<OrderService>());
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 
 builder.AddRabbitMQClient("rabbitmq");

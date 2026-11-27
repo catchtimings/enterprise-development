@@ -11,10 +11,12 @@
 
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.MySql" Version="13.6.4" />
+    <PackageReference Include="Aspire.Hosting.RabbitMQ" Version="17.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\FoodDelivery.Api\FoodDelivery.Api.csproj" />
+    <ProjectReference Include="..\FoodDelivery.Generator.Rabbitmq\FoodDelivery.Generator.Rabbitmq.csproj" />
   </ItemGroup>
 
 </Project>
