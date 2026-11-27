@@ -3,6 +3,7 @@ using FoodDelivery.Application.Interfaces.Services;
 using FoodDelivery.Application.Services;
 using FoodDelivery.Infrastructure.EFCore;
 using FoodDelivery.Infrastructure.EFCore.Repositories;
+using FoodDelivery.Infrastructure.RabbitMq;
 using FoodDelivery.ServiceDefaults;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
@@ -12,8 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 
 builder.AddMySqlDbContext<FoodDeliveryDbContext>("fooddeliverydb");
-builder.AddRabbitMQClient("rabbitmq");
-builder.Services.AddHostedService<RabbitMqOrderConsumer>();
+
 
 builder.AddServiceDefaults();
 
@@ -30,6 +30,9 @@ builder.Services.AddScoped<IDishService, DishService>();
 builder.Services.AddScoped<IDishCategoryService, DishCategoryService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
+
+builder.AddRabbitMQClient("rabbitmq");
+builder.Services.AddHostedService<RabbitMqOrderConsumer>();
 
 builder.Services.AddControllers();
 
