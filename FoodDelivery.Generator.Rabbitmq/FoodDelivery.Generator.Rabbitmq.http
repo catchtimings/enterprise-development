@@ -1,0 +1,6 @@
+@FoodDelivery.Generator.Rabbitmq_HostAddress = http://localhost:5296
+
+GET {{FoodDelivery.Generator.Rabbitmq_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
