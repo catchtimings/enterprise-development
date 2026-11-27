@@ -21,6 +21,7 @@
     <ProjectReference Include="..\FoodDelivery.Application\FoodDelivery.Application.csproj" />
     <ProjectReference Include="..\FoodDelivery.Infrastructure.EFCore\FoodDelivery.Infrastructure.EFCore.csproj" />
     <ProjectReference Include="..\FoodDelivery.Infrastructure.InMemory\FoodDelivery.Infrastructure.InMemory.csproj" />
+    <ProjectReference Include="..\FoodDelivery.Infrastructure.RabbitMq\FoodDelivery.Infrastructure.RabbitMq.csproj" />
     <ProjectReference Include="..\FoodDelivery.ServiceDefaults\FoodDelivery.ServiceDefaults.csproj" />
   </ItemGroup>
 

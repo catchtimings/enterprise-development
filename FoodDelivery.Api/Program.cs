@@ -12,6 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 
 builder.AddMySqlDbContext<FoodDeliveryDbContext>("fooddeliverydb");
+builder.AddRabbitMQClient("rabbitmq");
+builder.Services.AddHostedService<RabbitMqOrderConsumer>();
 
 builder.AddServiceDefaults();
 

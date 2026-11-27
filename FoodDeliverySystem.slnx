@@ -8,6 +8,7 @@
   <Project Path="FoodDelivery.Generator/FoodDelivery.Generator.csproj" Id="5e12c94c-a741-4131-ad36-18ea65e88bde" />
   <Project Path="FoodDelivery.Infrastructure.EFCore/FoodDelivery.Infrastructure.EFCore.csproj" Id="5260190d-b578-4164-a676-c012a03319bc" />
   <Project Path="FoodDelivery.Infrastructure.InMemory/FoodDelivery.Infrastructure.InMemory.csproj" Id="5215ddb9-36bf-480f-a8d2-4ffe3e0d6550" />
+  <Project Path="FoodDelivery.Infrastructure.RabbitMq/FoodDelivery.Infrastructure.RabbitMq.csproj" Id="9dda2f27-9f65-452d-911e-66cd227e5f54" />
   <Project Path="FoodDelivery.ServiceDefaults/FoodDelivery.ServiceDefaults.csproj" Id="59fd2004-72fb-4047-828f-3ca90a01690b" />
   <Project Path="FoodDelivery.Tests/FoodDelivery.Tests.csproj" />
 </Solution>
